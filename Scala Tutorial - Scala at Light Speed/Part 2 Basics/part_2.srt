@@ -1,0 +1,800 @@
+1
+00:00:00,000 --> 00:00:05,120
+ Hi and welcome back to Rock the JVM's Scala at Lightspeed. I'm Daniel and in
+
+2
+00:00:05,120 --> 00:00:08,280
+ this video we will talk about the fundamentals of the Scala language and
+
+3
+00:00:08,280 --> 00:00:13,080
+ we will start writing our first Scala code. So this is our project that we
+
+4
+00:00:13,080 --> 00:00:17,700
+ created in the previous video. So if you want to write code alongside me and if
+
+5
+00:00:17,700 --> 00:00:21,400
+ you haven't watched the previous video where we set up the initial files for
+
+6
+00:00:21,400 --> 00:00:25,240
+ this mini course, go ahead and watch that first and then come back to this
+
+7
+00:00:25,240 --> 00:00:29,520
+ video. I'm going to start writing our first Scala application and I'm going to
+
+8
+00:00:29,520 --> 00:00:34,000
+ go through the Scala fundamentals in this video. So under the com.rock.jvm
+
+9
+00:00:34,000 --> 00:00:37,380
+ package I'm going to right click and I'm going to create a new Scala
+
+10
+00:00:37,380 --> 00:00:41,300
+ application. So right click new, I'm going to create a Scala class, I'm going to name
+
+11
+00:00:41,300 --> 00:00:48,000
+ this basics and I'm going to select an object over here. I'm going to describe
+
+12
+00:00:48,000 --> 00:00:51,600
+ what an object is in the next video where we will discuss about Scala as an
+
+13
+00:00:51,600 --> 00:00:59,040
+ object-oriented language. But for now just create an object and make it extends app.
+
+14
+00:00:59,040 --> 00:01:03,460
+ Now extending app means that whatever I write in between these curly braces will be
+
+15
+00:01:03,460 --> 00:01:07,900
+ executable as a standalone application. So if I right click, I will have this option
+
+16
+00:01:07,900 --> 00:01:12,540
+ to run the basics application. For now the basics application doesn't actually do
+
+17
+00:01:12,540 --> 00:01:16,980
+ anything unless I write some actual code. So let me collapse this menu and start
+
+18
+00:01:16,980 --> 00:01:25,720
+ defining my first value. In Scala we work with values. So the very first thing that I'm going
+
+19
+00:01:25,720 --> 00:01:31,720
+ to show you is how to define a value. So I'm going to define a val called, let's call this
+
+20
+00:01:31,720 --> 00:01:41,480
+ meaning of life and I'm going to make it an int and the value is obviously 42. So this is the structure
+
+21
+00:01:41,480 --> 00:01:49,140
+ of defining a value in Scala. The keyword val, the name of the value, then colon type, in this case an int,
+
+22
+00:01:49,140 --> 00:01:55,440
+ and then equals and the right hand side which is the value of the value. Now if you want to relate to
+
+23
+00:01:55,440 --> 00:02:02,000
+ other programming languages like Java or C++ or JavaScript, you can think of a value as a constant.
+
+24
+00:02:02,000 --> 00:02:12,600
+ So let me write some equivalent Java or C code. Const int meaning of life equals 42. So this is the
+
+25
+00:02:12,600 --> 00:02:18,600
+ equivalent definition of a value in Scala. It's a constant meaning that it cannot be reassigned. So
+
+26
+00:02:18,600 --> 00:02:25,000
+ reassigning is bad. So if I write meaning of life equals somehow 43, then the compiler will issue an
+
+27
+00:02:25,000 --> 00:02:31,620
+ error saying reassignment to val. Reassigning to a val is illegal. So we think in terms of these
+
+28
+00:02:31,620 --> 00:02:38,760
+ constants and in Scala we compose these values to obtain new values. Now one thing related to the
+
+29
+00:02:38,760 --> 00:02:45,060
+ type over here. So I mentioned the type is colon int. Now in Scala you don't always need to specify
+
+30
+00:02:45,060 --> 00:02:49,680
+ the type because the compiler is smart enough to infer that for you. So let me define a boolean
+
+31
+00:02:49,680 --> 00:02:57,800
+ as false. Notice I haven't specified the type and I don't need to because the compiler can look at the
+
+32
+00:02:57,800 --> 00:03:04,940
+ right-hand side. Mention that is a boolean and thus will attach the type to this boolean value. So notice
+
+33
+00:03:04,940 --> 00:03:10,940
+ that a boolean is a boolean because the compiler has figured it out. So the type mentioning is optional.
+
+34
+00:03:10,940 --> 00:03:16,940
+ That is most of the time and I'm going to show you some exceptions later in this video.
+
+35
+00:03:16,940 --> 00:03:25,760
+ Some of the regular types that you are going to use in day-to-day are int, boolean, car, double, float,
+
+36
+00:03:25,760 --> 00:03:30,920
+ and so on and so forth. So the regular types that you see in other languages with the first letter
+
+37
+00:03:30,920 --> 00:03:36,620
+ capitalized is what you are going to see in Scala as standard types. Plus the string type, which is
+
+38
+00:03:36,620 --> 00:03:42,580
+ pretty special and common to JVM languages like Java and Scala. So let me define a string
+
+39
+00:03:42,580 --> 00:03:50,560
+ as the string I love Scala, which I hope you do by the end of this series. So we define a string by this
+
+40
+00:03:50,560 --> 00:03:57,540
+ double quote string. Now strings in Scala can be composed as in other languages with a plus operator.
+
+41
+00:03:57,540 --> 00:04:09,740
+ So let me create a composed string as I plus a space plus love or live plus another space plus Scala.
+
+42
+00:04:10,160 --> 00:04:15,920
+ So the strings can be composed with the plus operator and that means concatenating a string.
+
+43
+00:04:15,920 --> 00:04:19,980
+ But something that's very specific to Scala is what is called interpolation.
+
+44
+00:04:19,980 --> 00:04:23,300
+ So let me define an interpolated string
+
+45
+00:04:23,300 --> 00:04:33,680
+ and I'm going to say s quote. And when you say s quote, you can inject another value inside the string.
+
+46
+00:04:33,820 --> 00:04:42,140
+ So I can say the meaning of life is, and then with a dollar sign, I can inject another value inside the
+
+47
+00:04:42,140 --> 00:04:47,820
+ string. This is very useful day to day when you compose strings. So these are strings
+
+48
+00:04:47,820 --> 00:04:58,940
+ and string operations. Awesome. So we've discussed defining values, standard types, strings and string operations.
+
+49
+00:04:59,500 --> 00:05:04,220
+ Now something that's very important to Scala as a language and to the style of thinking that
+
+50
+00:05:04,220 --> 00:05:10,860
+ you will need to apply when using the Scala language is to think in terms of values and expressions.
+
+51
+00:05:10,860 --> 00:05:16,300
+ So when you define a value, the right hand sign can be any expression you like. So let me define expressions.
+
+52
+00:05:17,260 --> 00:05:27,740
+ So if I define an expression as 2+3. 2+3 is an expression because it can be reduced to a value.
+
+53
+00:05:27,740 --> 00:05:32,540
+ So expressions are structures that can be reduced to a value.
+
+54
+00:05:35,100 --> 00:05:43,900
+ Now, why is that important? Well, in most other languages and in most common languages, like JavaScript or C++ or Java or Python,
+
+55
+00:05:43,900 --> 00:05:48,860
+ we think in terms of instructions, which are the things that the computer does sequentially.
+
+56
+00:05:48,860 --> 00:05:53,260
+ So we tell the computer, do this, do that, increment this value, do this 10 more times,
+
+57
+00:05:53,260 --> 00:05:55,900
+ and as long as this boolean is false, do this.
+
+58
+00:05:55,900 --> 00:05:59,180
+ In Scala, we don't think in terms of instructions.
+
+59
+00:05:59,180 --> 00:06:04,140
+ We think in terms of values and composing these values to obtain new values.
+
+60
+00:06:04,140 --> 00:06:08,700
+ Now, in Scala, everything is an expression that can be reduced to a value.
+
+61
+00:06:08,700 --> 00:06:10,780
+ Even the if statement is an expression.
+
+62
+00:06:10,780 --> 00:06:15,100
+ That is called an if expression.
+
+63
+00:06:15,100 --> 00:06:16,860
+ So let me define an if expression
+
+64
+00:06:16,860 --> 00:06:24,940
+ as if the meaning of life is bigger than 43, then 56, else 999.
+
+65
+00:06:24,940 --> 00:06:27,900
+ So this is an if expression.
+
+66
+00:06:27,900 --> 00:06:33,500
+ It's an expression because it reduces to a single value, either 56 or 999,
+
+67
+00:06:33,500 --> 00:06:36,220
+ depending on the value of the meaning of life.
+
+68
+00:06:36,220 --> 00:06:41,420
+ To relate to other languages, like JavaScript or C++,
+
+69
+00:06:41,420 --> 00:06:43,820
+ there is this ternary question mark operator.
+
+70
+00:06:43,820 --> 00:06:45,260
+ So in other languages, you would say
+
+71
+00:06:45,260 --> 00:06:48,860
+ meaning of life
+
+72
+00:06:48,860 --> 00:06:55,500
+ greater than 43 question mark 56 colon 999.
+
+73
+00:06:55,500 --> 00:06:58,540
+ But in Scala, the if statement is much easier to read.
+
+74
+00:06:58,540 --> 00:07:02,140
+ That is because you can chain if expressions as long as you want.
+
+75
+00:07:02,140 --> 00:07:11,500
+ So let's call this chained if expression is if meaning of life is bigger than 43, then 56.
+
+76
+00:07:11,500 --> 00:07:15,340
+ Else, so I can write this on another line.
+
+77
+00:07:15,340 --> 00:07:19,740
+ Else, if meaning of life is less than 0, then negative 2.
+
+78
+00:07:19,740 --> 00:07:25,660
+ Else, if meaning of life is bigger than 999, then you can return some other value.
+
+79
+00:07:25,660 --> 00:07:28,060
+ Else, just return 0.
+
+80
+00:07:28,060 --> 00:07:34,460
+ So you can chain this if expression into a composed expression, which is still a single expression
+
+81
+00:07:34,460 --> 00:07:40,940
+ because it can reduce to a single value, either 56 or negative 2 or 78 or 0.
+
+82
+00:07:40,940 --> 00:07:44,860
+ So notice that right off the bat, we're starting to think in a different way.
+
+83
+00:07:44,860 --> 00:07:48,780
+ Because we're not doing something depending on some conditions.
+
+84
+00:07:48,780 --> 00:07:54,060
+ We're rather assigning values to these names if some conditions are true or not.
+
+85
+00:07:54,060 --> 00:07:58,300
+ Now, I mentioned that everything in Scala is an expression.
+
+86
+00:07:58,300 --> 00:08:01,660
+ And one of the notable expressions in Scala are code blocks.
+
+87
+00:08:03,580 --> 00:08:05,020
+ So let me define a code block.
+
+88
+00:08:05,020 --> 00:08:10,540
+ And a code block is defined by opening and closing a curly brace.
+
+89
+00:08:10,540 --> 00:08:14,460
+ And inside this code block, you can add definitions.
+
+90
+00:08:14,460 --> 00:08:18,220
+ That is, let's call this a local value.
+
+91
+00:08:18,220 --> 00:08:21,740
+ And let me define the value 67.
+
+92
+00:08:21,740 --> 00:08:24,700
+ And you can define as many things as you want.
+
+93
+00:08:24,700 --> 00:08:26,300
+ You can define local values.
+
+94
+00:08:26,300 --> 00:08:30,780
+ You can define functions, classes, whatever you want, even inner code blocks.
+
+95
+00:08:30,780 --> 00:08:33,100
+ But at the end, you will have to return something.
+
+96
+00:08:33,100 --> 00:08:37,100
+ So I could return a local value plus 3.
+
+97
+00:08:37,100 --> 00:08:41,580
+ A local value plus 3 is the last expression of the code block.
+
+98
+00:08:41,580 --> 00:08:45,260
+ And thus, it will be the value of the entire block.
+
+99
+00:08:45,260 --> 00:08:49,180
+ So the last expression of the code block is the value of the entire block.
+
+100
+00:08:49,180 --> 00:08:58,060
+ Now, if you pause a second to think about it,
+
+101
+00:08:58,060 --> 00:09:01,020
+ I haven't mentioned the type here for a code block.
+
+102
+00:09:01,020 --> 00:09:08,060
+ But the compiler is smart enough to go through this code block, figure out that this last expression is an int plus an int.
+
+103
+00:09:08,060 --> 00:09:14,220
+ And thus, it will assign the int type to this code block, as you can see in this little pop-up over here.
+
+104
+00:09:14,220 --> 00:09:16,460
+ So the compiler is very, very smart.
+
+105
+00:09:16,460 --> 00:09:23,020
+ It figures out the types for you so that you don't have to specifically focus on every single possible type.
+
+106
+00:09:23,020 --> 00:09:27,020
+ Especially if the types are really, really complex in really large code bases.
+
+107
+00:09:27,020 --> 00:09:30,540
+ Now, another fundamental thing about Scala is defining functions.
+
+108
+00:09:30,540 --> 00:09:35,020
+ So we work with values and functions because Scala is a functional programming language.
+
+109
+00:09:35,020 --> 00:09:36,460
+ So let me define a function.
+
+110
+00:09:36,460 --> 00:09:41,020
+ Defining a function is done with the keyword def.
+
+111
+00:09:41,020 --> 00:09:41,820
+ You name this function.
+
+112
+00:09:41,820 --> 00:09:43,100
+ Let's call this my function.
+
+113
+00:09:43,100 --> 00:09:50,460
+ And inside parentheses, you would pass in arguments in the form name, colon, type.
+
+114
+00:09:50,460 --> 00:09:53,740
+ Separated by a comma.
+
+115
+00:09:53,740 --> 00:09:57,260
+ And then at the very end, you would specify the return type.
+
+116
+00:09:57,260 --> 00:09:59,340
+ Let's say a string in this case.
+
+117
+00:09:59,340 --> 00:10:02,940
+ And then you put an equal sign, much like you do with values.
+
+118
+00:10:02,940 --> 00:10:06,220
+ And here on the right hand side, you have a single expression.
+
+119
+00:10:06,220 --> 00:10:13,100
+ So you would say y plus space plus x, for example.
+
+120
+00:10:13,100 --> 00:10:17,020
+ So this single expression is the return value of this function.
+
+121
+00:10:17,020 --> 00:10:22,060
+ Now, you can define a function as simple as this one on a single line.
+
+122
+00:10:22,060 --> 00:10:27,660
+ Or you can use a code block for larger functions, which is really the case with large code bases.
+
+123
+00:10:27,660 --> 00:10:32,860
+ So I can open and close some curly brace, and this definition will be equally fine.
+
+124
+00:10:32,860 --> 00:10:37,020
+ Because as I mentioned a couple of seconds ago, a code block is also an expression.
+
+125
+00:10:37,020 --> 00:10:42,060
+ Now, functions can be really complex, and they can depend on their own definition.
+
+126
+00:10:42,060 --> 00:10:45,580
+ Which means that functions are usually recursive in practice.
+
+127
+00:10:45,580 --> 00:10:51,180
+ So let me define a factorial function.
+
+128
+00:10:51,180 --> 00:10:55,500
+ Which takes the number n as an argument, so n:int.
+
+129
+00:10:56,300 --> 00:11:01,900
+ And it will return an int, which will be the product of all the natural numbers from 1 up to n.
+
+130
+00:11:01,900 --> 00:11:06,300
+ So this function can be interpreted as follows.
+
+131
+00:11:06,300 --> 00:11:11,580
+ If n is less than or equal to 1, then I will return 1.
+
+132
+00:11:11,580 --> 00:11:16,220
+ Else, I will return n times factorial of n minus 1.
+
+133
+00:11:16,220 --> 00:11:21,900
+ Now, this style of thinking is a little bit different than what you've probably been used to
+
+134
+00:11:21,900 --> 00:11:24,060
+ from Java or C++ or Python.
+
+135
+00:11:24,060 --> 00:11:25,340
+ So how does this function work?
+
+136
+00:11:25,340 --> 00:11:28,140
+ Let's say I want to compute factorial of 5.
+
+137
+00:11:28,140 --> 00:11:36,060
+ So factorial of 5, because 5 is not less than or equal to 1, that's 5 times factorial of 4.
+
+138
+00:11:36,060 --> 00:11:38,140
+ Well, what is factorial of 4?
+
+139
+00:11:38,140 --> 00:11:45,020
+ Well, 4 is not less than or equal to 1, so factorial of 4 is 4 times factorial of 3.
+
+140
+00:11:45,660 --> 00:11:56,300
+ Again, factorial of 3, in much the same way, is 3 times factorial of 2, and factorial of 2 is 2 times factorial of 1.
+
+141
+00:11:56,300 --> 00:11:59,260
+ And this time, factorial of 1 is equal to 1.
+
+142
+00:11:59,260 --> 00:12:02,460
+ That is because 1 is less than or equal to 1.
+
+143
+00:12:02,460 --> 00:12:04,460
+ So factorial of 1, so factorial of 1 is equal to 1.
+
+144
+00:12:04,460 --> 00:12:13,740
+ So if I wanted to compute factorial of 5, I would need to go back on my stack and compute factorial of 2, which is 2 times factorial of 1, which is 2 times 1.
+
+145
+00:12:15,260 --> 00:12:21,100
+ Then we would need to compute factorial of 3, which is 3 times factorial of 2, which is 3 times 2.
+
+146
+00:12:22,220 --> 00:12:26,780
+ Factorial of 4 is 4 times factorial of 3, which is 4 times 6.
+
+147
+00:12:26,780 --> 00:12:34,060
+ And factorial of 5 is 5 times factorial of 4, which is 5 times 24.
+
+148
+00:12:34,060 --> 00:12:35,820
+ And this is 120.
+
+149
+00:12:35,820 --> 00:12:41,900
+ So this is how we think in Scala, in terms of recursive functions to compute the values that you want.
+
+150
+00:12:42,460 --> 00:12:45,500
+ If you want to take an idea out of this video is the following.
+
+151
+00:12:45,500 --> 00:12:53,340
+ In Scala, we don't use loops or iteration.
+
+152
+00:12:53,340 --> 00:12:56,380
+ We use recursion.
+
+153
+00:12:56,380 --> 00:13:02,860
+ So this is the fundamental thinking style that you will need to adopt in order to be a Scala programmer.
+
+154
+00:13:02,860 --> 00:13:07,740
+ Scala also has variables and loops, but they're heavily, heavily discouraged.
+
+155
+00:13:07,740 --> 00:13:14,220
+ If you write variables or loops in production code, you will be shunned upon, fired, and nobody will speak to you again.
+
+156
+00:13:14,220 --> 00:13:17,420
+ That was a joke, but that was only half a joke.
+
+157
+00:13:17,420 --> 00:13:19,980
+ Iteration is heavily discouraged in Scala.
+
+158
+00:13:19,980 --> 00:13:24,780
+ So if you ever need to ask, how do I iterate, how do I loop in Scala?
+
+159
+00:13:24,780 --> 00:13:26,060
+ That is the wrong question.
+
+160
+00:13:26,060 --> 00:13:29,100
+ You will need to think in terms of functions and recursion.
+
+161
+00:13:29,100 --> 00:13:33,660
+ Now, the last thing that I'm going to show you in this video is the unit return types.
+
+162
+00:13:35,980 --> 00:13:41,180
+ So notice that every single thing that we wrote in this code was somehow related to a value.
+
+163
+00:13:41,180 --> 00:13:43,740
+ Everything was an int, a boolean, a string.
+
+164
+00:13:43,740 --> 00:13:47,260
+ All these functions that we wrote were either a string, an int.
+
+165
+00:13:47,260 --> 00:13:49,740
+ So everything returned a meaningful value.
+
+166
+00:13:49,740 --> 00:13:53,420
+ In Scala, there is such a thing as no meaningful value.
+
+167
+00:13:53,420 --> 00:13:58,620
+ And this is the unit return type.
+
+168
+00:13:58,620 --> 00:14:03,660
+ And no meaningful value is the equivalent of void in other languages.
+
+169
+00:14:03,660 --> 00:14:11,500
+ So for example, the printLine function, that is a function that's returning void or unit.
+
+170
+00:14:11,500 --> 00:14:17,500
+ So if I print line, I love Scala, this doesn't return any meaningful value.
+
+171
+00:14:17,500 --> 00:14:18,940
+ It just does something.
+
+172
+00:14:18,940 --> 00:14:24,700
+ And we think of the unit type as the type of side effects.
+
+173
+00:14:24,700 --> 00:14:30,860
+ Which is a very important term in Scala and functional programming because side effects are
+
+174
+00:14:30,860 --> 00:14:34,860
+ operations that have nothing to do with computing some meaningful information.
+
+175
+00:14:34,860 --> 00:14:38,940
+ Side effects relate to printing something on screen, showing something on screen,
+
+176
+00:14:38,940 --> 00:14:44,700
+ sending something to a socket or a server, storing something in a file or something like that.
+
+177
+00:14:44,700 --> 00:14:48,140
+ But it has nothing to do with computing meaningful information.
+
+178
+00:14:48,140 --> 00:14:50,540
+ So side effects return unit.
+
+179
+00:14:50,540 --> 00:14:56,220
+ Every print statement, which is the equivalent of system.out.printLine,
+
+180
+00:14:56,220 --> 00:15:03,820
+ printf in C or C++, print in Python, and console.log.
+
+181
+00:15:03,820 --> 00:15:10,460
+ All of these are equivalent functions that return void in other languages.
+
+182
+00:15:10,460 --> 00:15:13,020
+ And in Scala, they return unit.
+
+183
+00:15:13,020 --> 00:15:19,500
+ If you want to define a function returning unit, you would simply say my unit returning function,
+
+184
+00:15:19,500 --> 00:15:24,780
+ which takes no arguments or takes some arguments that you like and returns unit.
+
+185
+00:15:24,780 --> 00:15:27,900
+ And here you can return anything you like.
+
+186
+00:15:27,900 --> 00:15:35,260
+ For example, print line, I love, I don't love actually, I don't love returning unit.
+
+187
+00:15:37,660 --> 00:15:45,820
+ But notice even these side effects that have no meaningful information to return, still return a value of type unit.
+
+188
+00:15:45,820 --> 00:15:53,020
+ And the only value that this unit type contains, so val the unit, is this little token.
+
+189
+00:15:53,020 --> 00:15:54,620
+ Open and close parenthesis.
+
+190
+00:15:54,620 --> 00:16:00,860
+ And this open and close parenthesis is the same value returned by print line and other functions returning unit.
+
+191
+00:16:00,860 --> 00:16:03,580
+ All right, so that was it with the Scala fundamentals.
+
+192
+00:16:03,580 --> 00:16:07,740
+ In the next video, I'm going to talk about Scala as an object-oriented language.
+
+193
+00:16:07,740 --> 00:16:12,940
+ If you liked this video and found it useful, go ahead and click the like button and subscribe to the Rock the JVM channel,
+
+194
+00:16:12,940 --> 00:16:15,180
+ and I'll be posting more free goodies here.
+
+195
+00:16:15,180 --> 00:16:22,460
+ This video series is also available as a free online course at rockthejvm.com, where you will also have the option
+
+196
+00:16:22,460 --> 00:16:25,180
+ to download these videos for your offline use.
+
+197
+00:16:25,180 --> 00:16:31,820
+ And on the Rock the JVM site, we also have hundreds of hours of premium content dedicated to Scala,
+
+198
+00:16:31,820 --> 00:16:35,260
+ functional programming, Akka, Apache Spark, and so much more.
+
+199
+00:16:35,260 --> 00:16:39,260
+ So go ahead and check out rockthejvm.com, and I'll be waiting for you in the next video.
+
+200
+00:16:45,180 --> 00:16:50,620
+ I'll see you in the next video.
+

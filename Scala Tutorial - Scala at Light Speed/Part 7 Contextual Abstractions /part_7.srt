@@ -1,0 +1,1296 @@
+1
+00:00:01,000 --> 00:00:03,120
+ Alright, so we're back to Scala@Lightspeed.
+
+2
+00:00:03,120 --> 00:00:07,640
+ So I just mentioned in the previous video that the Scala@Lightspeed mini-course is closing,
+
+3
+00:00:07,640 --> 00:00:09,760
+ and here I am with another lesson.
+
+4
+00:00:09,760 --> 00:00:13,920
+ This is Daniel for Rock the JVM, and in this video I'll show you contextual abstractions
+
+5
+00:00:13,920 --> 00:00:16,360
+ specifically in Scala 3.
+
+6
+00:00:16,360 --> 00:00:21,720
+ The rest of the mini-course works just fine on both Scala 2 and Scala 3, and in this video
+
+7
+00:00:21,720 --> 00:00:25,080
+ we're going to write specific Scala 3.
+
+8
+00:00:25,080 --> 00:00:29,880
+ So let's move back to our project, and under com.rockthejvm I'm going to create another
+
+9
+00:00:29,880 --> 00:00:36,120
+ Scala application, I'm going to name this contextual abstractions, and I'm going to
+
+10
+00:00:36,120 --> 00:00:41,000
+ make it an object as before, just in case we need to test something, and I'm going to add
+
+11
+00:00:41,000 --> 00:00:42,940
+ a main method.
+
+12
+00:00:42,940 --> 00:00:47,140
+ Now make sure that your project is specifically set up with Scala 3, which you can find here
+
+13
+00:00:47,140 --> 00:00:54,440
+ under build.sbt, or you can go to, I think it's file, and then project structure, and here
+
+14
+00:00:54,440 --> 00:00:58,560
+ you'll find the Scala version that you created your project with.
+
+15
+00:00:58,560 --> 00:01:04,220
+ So let me collapse my file explorer, and let me show you what I mean by contextual abstractions.
+
+16
+00:01:04,220 --> 00:01:08,840
+ This lesson will have two big techniques that will give Scala some extra power and extra
+
+17
+00:01:08,840 --> 00:01:10,640
+ expressiveness.
+
+18
+00:01:10,640 --> 00:01:16,800
+ The first set of features is called context parameters, or arguments, and I'm going to
+
+19
+00:01:16,800 --> 00:01:22,980
+ show you shortly what I mean by that, and this will also motivate the name of contextual abstractions,
+
+20
+00:01:22,980 --> 00:01:27,640
+ which is quite vague, but frankly, I couldn't find a better name myself.
+
+21
+00:01:27,640 --> 00:01:31,480
+ So I'm going to start with a simple example, I'm going to define a small list, let's call
+
+22
+00:01:31,480 --> 00:01:37,480
+ this a list, and I'm going to create a list of numbers, and I'm going to specifically enter
+
+23
+00:01:37,480 --> 00:01:39,640
+ them in a different order than the ascending ones.
+
+24
+00:01:39,640 --> 00:01:43,300
+ So I'm going to say two, one, three, four, or something like that.
+
+25
+00:01:43,300 --> 00:01:49,760
+ Now, the list data structure, much like most sequences in the Scala standard library, has
+
+26
+00:01:49,760 --> 00:01:51,800
+ a method called sorted.
+
+27
+00:01:51,800 --> 00:01:54,580
+ So I'm going to say, let's call this an ordered list.
+
+28
+00:01:54,580 --> 00:01:58,740
+ I'm going to say list.sorted.
+
+29
+00:01:58,740 --> 00:02:06,240
+ Now, sorted doesn't take any arguments, but if I print line the ordered list, and if you
+
+30
+00:02:06,240 --> 00:02:10,960
+ run this application, it'll take a couple of seconds for this thing to compile, we'll
+
+31
+00:02:10,960 --> 00:02:13,080
+ get the list one, two, three, four.
+
+32
+00:02:13,080 --> 00:02:18,040
+ And the list is magically sorted in ascending order, as if the compiler knew by magic what
+
+33
+00:02:18,040 --> 00:02:21,220
+ the natural ordering of ints should be.
+
+34
+00:02:21,220 --> 00:02:26,860
+ Now, from your existing programming experience, you may have done a bit of sorting of collections
+
+35
+00:02:26,860 --> 00:02:32,940
+ yourself, and you probably are aware that whenever you want to sort a collection, maybe a list,
+
+36
+00:02:32,940 --> 00:02:37,060
+ or an array, or what have you, you need to pass some sort of comparison function.
+
+37
+00:02:37,060 --> 00:02:43,460
+ So something like a comparator or object, or have the elements be comparable themselves,
+
+38
+00:02:43,460 --> 00:02:49,620
+ or some other form of telling the runtime which element is "less than" another element,
+
+39
+00:02:49,620 --> 00:02:54,120
+ so that we know which element needs to stay first, and which element needs to stay last in the
+
+40
+00:02:54,120 --> 00:02:55,260
+ sorted collection.
+
+41
+00:02:55,260 --> 00:03:01,700
+ Now, in Scala, we have an existing comparison function, or comparison object, and that is
+
+42
+00:03:01,700 --> 00:03:02,900
+ called ordering.
+
+43
+00:03:02,900 --> 00:03:08,080
+ Now, an ordering is pretty much a glorified two argument function that says which element
+
+44
+00:03:08,080 --> 00:03:09,260
+ is less than another element.
+
+45
+00:03:09,260 --> 00:03:20,500
+ So, I can define, for example, descending ordering as ordering of int, and the type ordering comes
+
+46
+00:03:20,500 --> 00:03:25,900
+ predefined in the Scala standard library, and I can build an ordering object by saying ordering
+
+47
+00:03:25,900 --> 00:03:32,020
+ from less than, so you're basically wrapping a two argument function that returns a boolean,
+
+48
+00:03:32,020 --> 00:03:38,560
+ and the boolean says the first element is smaller than the second element, with "smaller than"
+
+49
+00:03:38,560 --> 00:03:39,620
+ in air quotes.
+
+50
+00:03:39,620 --> 00:03:44,380
+ So, I'm gonna say, for example, underscore, greater than, underscore.
+
+51
+00:03:44,380 --> 00:03:49,260
+ So, this is the shorthand lambda notation in Scala that you may have seen in the previous
+
+52
+00:03:49,260 --> 00:03:54,940
+ video, so that's essentially a, b, arrow, a bigger than b.
+
+53
+00:03:54,940 --> 00:04:00,440
+ So I'm basically saying that given to elements a and b, a is "less than b", so a should stay
+
+54
+00:04:00,440 --> 00:04:05,980
+ before b, if a is greater than b in the mathematical sense, alright?
+
+55
+00:04:05,980 --> 00:04:10,440
+ So this is what the ordering object will do, and here in this lambda, you can define your
+
+56
+00:04:10,440 --> 00:04:12,600
+ own logic for comparing numbers.
+
+57
+00:04:12,600 --> 00:04:21,440
+ Now, the thing is that the compiler can automatically sort a list by having access to some value of
+
+58
+00:04:21,440 --> 00:04:25,280
+ ordering int that comes pre-built with the Scala standard library.
+
+59
+00:04:25,280 --> 00:04:32,600
+ So this instance of ordering int, which denotes the natural ordering of integers, is automatically
+
+60
+00:04:32,600 --> 00:04:38,020
+ fetched by the compiler somehow, and injected into the argument of the sorted method.
+
+61
+00:04:38,020 --> 00:04:45,680
+ So we say sorted, but in reality, it actually has an additional argument that has an ordering
+
+62
+00:04:45,680 --> 00:04:48,720
+ which is automatically injected by the compiler.
+
+63
+00:04:48,720 --> 00:04:55,120
+ Now in order to be able to inject our own ordering into the sorted method of list, we are going
+
+64
+00:04:55,120 --> 00:05:00,220
+ to make this descending ordering thing, or whatever ordering we might want to use for the sorted
+
+65
+00:05:00,220 --> 00:05:03,820
+ method, and we're going to make it a given.
+
+66
+00:05:03,820 --> 00:05:09,860
+ Now a given instance will be automatically fetched by the compiler for every single method that
+
+67
+00:05:09,860 --> 00:05:16,320
+ takes a so-called magical phantom argument here, of type ordering int.
+
+68
+00:05:16,320 --> 00:05:22,700
+ So in this case, for a list.sorted, the compiler will not fetch the given ordering of int, which
+
+69
+00:05:22,700 --> 00:05:29,020
+ is the natural ordering of integers built in from the Scala standard library, but it will rather
+
+70
+00:05:29,020 --> 00:05:32,820
+ use this given instance that I've defined.
+
+71
+00:05:32,820 --> 00:05:39,060
+ So this will actually be injected with the descending ordering that I have defined here in this scope.
+
+72
+00:05:39,060 --> 00:05:43,900
+ So if I run this application again, we're going to see the list sorted backwards this time
+
+73
+00:05:43,900 --> 00:05:44,900
+ around.
+
+74
+00:05:44,900 --> 00:05:47,340
+ So we see list 4321.
+
+75
+00:05:47,340 --> 00:05:49,420
+ So this is quite magical.
+
+76
+00:05:49,420 --> 00:05:55,480
+ Depending on the kind of given instances that we define in the scope where a method with these
+
+77
+00:05:55,480 --> 00:06:00,600
+ kinds of arguments is being called, we can change the behavior of that method.
+
+78
+00:06:00,600 --> 00:06:08,480
+ Now the phantom argument to the sorted method is actually called a contextual argument.
+
+79
+00:06:08,480 --> 00:06:14,920
+ So sorted actually takes an argument list, but that argument list contains an element or an
+
+80
+00:06:14,920 --> 00:06:17,480
+ instance of type ordering int, which is contextual.
+
+81
+00:06:17,480 --> 00:06:23,160
+ So depending on the context where the sorted method is being called, the compiler will fetch
+
+82
+00:06:23,160 --> 00:06:27,920
+ whatever given instance it has access to within that scope.
+
+83
+00:06:27,920 --> 00:06:32,880
+ And with that ordering int, the behavior of sorted will give you back different results.
+
+84
+00:06:32,880 --> 00:06:37,960
+ So if I had not created this given instance, then if I run this application again, the compiler
+
+85
+00:06:37,960 --> 00:06:42,040
+ will fetch whatever given instance it may have access to from the Scala standard library.
+
+86
+00:06:42,040 --> 00:06:46,420
+ So we get list 1234 from the natural ordering of integers.
+
+87
+00:06:46,420 --> 00:06:51,880
+ If I create my instance of descending ordering with my own logic, then the behavior of sorted
+
+88
+00:06:51,880 --> 00:06:55,640
+ changes and we get the list sorted backwards.
+
+89
+00:06:55,640 --> 00:07:01,000
+ Now, if you want to make an analogy to the previous video where we talked about implicits, a given
+
+90
+00:07:01,000 --> 00:07:07,600
+ instance is analogous to an implicit vowel.
+
+91
+00:07:07,600 --> 00:07:11,560
+ And because the Scala 3 standard library is still very young and implicits are going to
+
+92
+00:07:11,560 --> 00:07:14,320
+ be deprecated in future versions of Scala 3.
+
+93
+00:07:14,320 --> 00:07:21,800
+ The sorted method takes an implicit value of ordering B. So this will be the phantom argument,
+
+94
+00:07:21,800 --> 00:07:27,040
+ the contextual argument that I mentioned here that you can solve or that you can pass automatically
+
+95
+00:07:27,040 --> 00:07:32,880
+ through the compiler by creating a given instance of ordering in in the scope where the sorted method
+
+96
+00:07:32,880 --> 00:07:33,880
+ is being called.
+
+97
+00:07:33,880 --> 00:07:40,640
+ Now, in Scala 3, you have the ultimate freedom to choose whether your methods that you want
+
+98
+00:07:40,640 --> 00:07:45,600
+ to implement in your business logic will support this sort of behavior that will take contextual
+
+99
+00:07:45,600 --> 00:07:50,640
+ arguments and having different behaviors depending on the scope or the context where they're called.
+
+100
+00:07:50,640 --> 00:07:51,640
+ Let me give an example.
+
+101
+00:07:51,640 --> 00:07:57,640
+ So I'm going to define a trait, I'm going to call this combinator, and I'm going to type it
+
+102
+00:07:57,640 --> 00:08:02,400
+ with the type argument a, and this combinator has a simple method called combine.
+
+103
+00:08:02,400 --> 00:08:07,880
+ And it will combine two elements of type a, so x of type a and y of type a, and it will
+
+104
+00:08:07,880 --> 00:08:09,640
+ return another element of type a.
+
+105
+00:08:09,640 --> 00:08:15,440
+ Now, an example of combinator would be something that sums two integers together and returns
+
+106
+00:08:15,440 --> 00:08:17,280
+ their mathematical sum.
+
+107
+00:08:17,280 --> 00:08:23,760
+ Now, technically, mathematically, this is called a monoid, but I'm going to revert to the combinator
+
+108
+00:08:23,760 --> 00:08:26,760
+ name because it's much more descriptive.
+
+109
+00:08:26,760 --> 00:08:33,240
+ Now, assume that I'm going to define a method called combineAll that takes a type argument
+
+110
+00:08:33,240 --> 00:08:42,360
+ a, and a list, which is a list of a, and this returns an a, which is the result of collapsing
+
+111
+00:08:42,360 --> 00:08:48,200
+ all the elements of the list into the same value given by the logic of a particular combinator.
+
+112
+00:08:48,200 --> 00:08:51,800
+ So I'm going to pass a combinator here as a second argument.
+
+113
+00:08:51,800 --> 00:08:56,200
+ So I'm going to say combinator as a combinator a.
+
+114
+00:08:56,200 --> 00:09:01,200
+ Now when you write something like this, in practice, there are several wishes involved in
+
+115
+00:09:01,200 --> 00:09:02,720
+ such methods.
+
+116
+00:09:02,720 --> 00:09:08,880
+ First of all, your API, this combineAll, might get quite big and quite cumbersome and boilerplate-y
+
+117
+00:09:08,880 --> 00:09:10,040
+ at the call site.
+
+118
+00:09:10,040 --> 00:09:14,760
+ So whenever you want to actually use combineAll on a bunch of lists, you always have to pass
+
+119
+00:09:14,760 --> 00:09:17,880
+ the right combinators of those particular types.
+
+120
+00:09:17,880 --> 00:09:21,960
+ And especially if you use this often, this might get quite annoying.
+
+121
+00:09:21,960 --> 00:09:27,640
+ The second wish is that you might simply want to not care what the local combinator rules
+
+122
+00:09:27,640 --> 00:09:30,160
+ are at the call site of combineAll.
+
+123
+00:09:30,160 --> 00:09:39,120
+ So you might want to ideally call combineAll on the list 1234 and not really care what the
+
+124
+00:09:39,120 --> 00:09:42,680
+ combination logic will be for the call site here.
+
+125
+00:09:42,680 --> 00:09:49,320
+ Maybe you're doing some math library and combineAll for list 1234 naturally sums them together.
+
+126
+00:09:49,320 --> 00:09:54,320
+ You don't really need to pass a combinator which sums up all the integers every single time.
+
+127
+00:09:54,320 --> 00:09:56,840
+ Now this may sound like a first world problem.
+
+128
+00:09:56,840 --> 00:10:02,640
+ But in reality, this kind of call or this kind of code would actually quite dramatically improve
+
+129
+00:10:02,640 --> 00:10:06,320
+ the quality of your code and the quality of your development life.
+
+130
+00:10:06,320 --> 00:10:13,480
+ So in order to be able to grant this kind of wishes, then we would add a context argument
+
+131
+00:10:13,480 --> 00:10:15,280
+ here to this combineAll method.
+
+132
+00:10:15,280 --> 00:10:22,000
+ So we would make the combinator a be a contextual argument by using a keyword called using.
+
+133
+00:10:22,000 --> 00:10:28,040
+ So when you say using combinator as combinator a, the compiler will need to take care to pass
+
+134
+00:10:28,040 --> 00:10:33,160
+ the appropriate combinator a whenever you call combineAll if you have a given of that type
+
+135
+00:10:33,160 --> 00:10:34,160
+ in scope.
+
+136
+00:10:34,160 --> 00:10:37,840
+ So I'm going to show you how you can use that shortly.
+
+137
+00:10:37,840 --> 00:10:38,840
+ Let's implement this real quick.
+
+138
+00:10:38,840 --> 00:10:46,260
+ So I'm going to say list.reduce and I'm going to pass a two argument function that is based
+
+139
+00:10:46,260 --> 00:10:47,260
+ on the combiner.
+
+140
+00:10:47,260 --> 00:10:51,040
+ So I'm going to say combinator.combine.
+
+141
+00:10:51,040 --> 00:10:57,720
+ Or if you prefer the long hand notation, I can say a, b, arrow, combinator combine with
+
+142
+00:10:57,720 --> 00:10:58,720
+ a and b.
+
+143
+00:10:58,720 --> 00:10:59,720
+ All right.
+
+144
+00:10:59,720 --> 00:11:02,600
+ So I can say list.reduce on this lambda.
+
+145
+00:11:02,600 --> 00:11:06,920
+ And this lambda will take care to collapse this entire list under the combination function
+
+146
+00:11:06,920 --> 00:11:09,080
+ of the combinator.
+
+147
+00:11:09,080 --> 00:11:13,900
+ Now this structure with the context argument does two things.
+
+148
+00:11:13,900 --> 00:11:18,920
+ Let's say that I define the sum of all the numbers in a list.
+
+149
+00:11:18,920 --> 00:11:20,780
+ And I'm going to call combineAll.
+
+150
+00:11:20,780 --> 00:11:24,980
+ So combineAll of that particular list that I defined at the beginning.
+
+151
+00:11:24,980 --> 00:11:28,380
+ So I'm going to say combineAll under a list.
+
+152
+00:11:28,380 --> 00:11:30,980
+ Now the contextual argument here does two things.
+
+153
+00:11:30,980 --> 00:11:35,300
+ First of all, if we don't pass the combinator here and the compiler cannot really find anything,
+
+154
+00:11:35,300 --> 00:11:37,460
+ then this code will not compile at all.
+
+155
+00:11:37,460 --> 00:11:41,780
+ Because the compiler cannot really inject the combinator logic for combineAll.
+
+156
+00:11:41,780 --> 00:11:46,820
+ So if I try to run this application or even compile it, we will see a compiler error saying
+
+157
+00:11:46,820 --> 00:11:51,220
+ no implicit argument of type combinator int was found for parameter whatever.
+
+158
+00:11:51,220 --> 00:11:51,940
+ All right.
+
+159
+00:11:51,940 --> 00:11:56,100
+ So we don't have a given instance for the compiler to inject automatically here.
+
+160
+00:11:56,100 --> 00:12:05,540
+ Thankfully, if I define a given instance, let's call this int combinator as a combinator int.
+
+161
+00:12:06,340 --> 00:12:08,660
+ And I'm going to define a new combinator.
+
+162
+00:12:08,660 --> 00:12:09,220
+ And I'm going to define a new combinator real quick.
+
+163
+00:12:09,220 --> 00:12:11,060
+ So I'm going to say a new combinator int.
+
+164
+00:12:11,060 --> 00:12:16,740
+ And I'm going to say override combine and I'm going to return x plus y.
+
+165
+00:12:16,740 --> 00:12:20,260
+ Then the compiler will automatically pass this one here.
+
+166
+00:12:20,260 --> 00:12:24,660
+ So int combinator will actually be passed by the compiler automatically.
+
+167
+00:12:24,660 --> 00:12:29,620
+ In fact, you can also check IntelliJ because it shows you implicit hints.
+
+168
+00:12:29,620 --> 00:12:33,220
+ That is all the given instances that are automatically passed by the compiler.
+
+169
+00:12:33,220 --> 00:12:37,140
+ So you can go here to help and search for implicit hints.
+
+170
+00:12:37,140 --> 00:12:40,420
+ And here you have a menu here under view.
+
+171
+00:12:40,420 --> 00:12:45,460
+ And if you click that one, it'll show you what values the compiler automatically passes for you.
+
+172
+00:12:45,460 --> 00:12:48,260
+ So right now, if I hit on recompile.
+
+173
+00:12:48,260 --> 00:12:51,940
+ So I'm going to hit command shift 9 here to recompile my code.
+
+174
+00:12:51,940 --> 00:12:53,620
+ Notice that the code can now compile.
+
+175
+00:12:53,620 --> 00:12:57,380
+ And I can also print, for example, the sum.
+
+176
+00:12:58,660 --> 00:13:03,620
+ And the sum, because I have elements 1, 2, 3, 4 in whatever order, the sum should be 10.
+
+177
+00:13:03,620 --> 00:13:05,940
+ Because this combinator will sum them all together.
+
+178
+00:13:05,940 --> 00:13:08,740
+ So we're seeing the number 10 here in the console.
+
+179
+00:13:08,740 --> 00:13:16,500
+ So a contextual argument can be specified using the using keyword here in a separate argument list.
+
+180
+00:13:16,500 --> 00:13:22,820
+ And you can automatically pass or make the compiler pass a particular instance of,
+
+181
+00:13:22,820 --> 00:13:28,740
+ in this case, combinator int with a given instance in the scope of the call site.
+
+182
+00:13:28,740 --> 00:13:35,780
+ And as you saw earlier, if the compiler cannot really find a given instance to inject here in the using clause,
+
+183
+00:13:35,780 --> 00:13:37,220
+ then the code will not compile.
+
+184
+00:13:37,220 --> 00:13:42,260
+ And I'm going to show you where the compiler actually looks for given instances.
+
+185
+00:13:44,980 --> 00:13:47,540
+ So first of all, the compiler looks in the local scope.
+
+186
+00:13:47,540 --> 00:13:53,780
+ So in the scope where the actual method taking a contextual argument is being called,
+
+187
+00:13:53,780 --> 00:13:59,940
+ the compiler will search for a particular given value of that type in the scope where that method is called.
+
+188
+00:13:59,940 --> 00:14:01,460
+ This is called local scope.
+
+189
+00:14:01,460 --> 00:14:04,900
+ The compiler then looks for the imported scope.
+
+190
+00:14:05,860 --> 00:14:12,100
+ Because you can import given instances by using import and then you can write your package.
+
+191
+00:14:12,100 --> 00:14:15,140
+ And then you can say given after that.
+
+192
+00:14:15,140 --> 00:14:21,780
+ So when you say import your package.given, you import all the given instances from that package.
+
+193
+00:14:21,780 --> 00:14:26,580
+ So the compiler will look in the imported scope for the given instances of that type.
+
+194
+00:14:26,580 --> 00:14:31,620
+ And the third place that compiler will look is the companions.
+
+195
+00:14:31,620 --> 00:14:39,460
+ That is the companion objects, the companion singleton instances of all the types involved in the method call.
+
+196
+00:14:39,460 --> 00:14:45,620
+ And in our particular case, the compiler will look for a default combinator int,
+
+197
+00:14:45,620 --> 00:14:49,540
+ because we're using a list of integers here in this method call.
+
+198
+00:14:49,540 --> 00:14:57,700
+ So it will look in the companion of list and the companion of int,
+
+199
+00:14:58,660 --> 00:15:03,780
+ which just so happens that it is the case here for a list.sorted.
+
+200
+00:15:03,780 --> 00:15:10,740
+ So in the exception of me creating a given ordering int here in the scope where the sorted method is being called,
+
+201
+00:15:10,740 --> 00:15:17,540
+ the compiler will look in this third place, in the companion of list, which doesn't really have an ordering int,
+
+202
+00:15:17,540 --> 00:15:24,020
+ but rather it looks in the companion of the int type itself, which happens to have an ordering of int.
+
+203
+00:15:24,020 --> 00:15:29,620
+ So the compiler will simply fetch that ordering of int and it will inject it here in the sorted method.
+
+204
+00:15:29,620 --> 00:15:36,180
+ So quite a lot of power and quite a lot of behavior change depending on the context of the call site.
+
+205
+00:15:36,180 --> 00:15:39,460
+ That's why they're called contextual abstractions.
+
+206
+00:15:39,460 --> 00:15:42,740
+ And this is called an abstraction because you're abstracting away.
+
+207
+00:15:42,740 --> 00:15:47,620
+ You're basically not thinking of the combinator logic at the call site.
+
+208
+00:15:47,620 --> 00:15:52,980
+ You're simply calling combine all a list and the compiler is only taking care of the rest.
+
+209
+00:15:52,980 --> 00:15:55,940
+ So you don't have to care about it, you don't have to think about it.
+
+210
+00:15:55,940 --> 00:16:00,100
+ Right, let's talk about context bounds.
+
+211
+00:16:00,100 --> 00:16:09,060
+ Now, there is a shorthand way of using a contextual argument if you're not actually using the combinator instance.
+
+212
+00:16:09,060 --> 00:16:14,260
+ So for example, I can define another method, let's call this combine all, I'm going to use v2 here,
+
+213
+00:16:14,260 --> 00:16:17,540
+ with type argument a and a list as a list of a.
+
+214
+00:16:17,540 --> 00:16:27,300
+ And if you're not actually using the combinator instance directly, but you're rather calling other methods that are using a combinator a,
+
+215
+00:16:27,300 --> 00:16:34,420
+ then you can simply say using combinator a, not necessarily naming that particular instance.
+
+216
+00:16:34,420 --> 00:16:37,940
+ And this will return an a and the implementation can be whatever.
+
+217
+00:16:37,940 --> 00:16:45,860
+ And in that case, there's also an even more shorthand notation for specifying a using clause,
+
+218
+00:16:45,860 --> 00:16:51,460
+ because you're only mentioning that you need a combinator a so that the compiler can use it,
+
+219
+00:16:51,460 --> 00:16:54,420
+ but you don't necessarily have to name it.
+
+220
+00:16:54,420 --> 00:16:57,460
+ So this is only a type restriction for the compiler.
+
+221
+00:16:57,460 --> 00:17:00,660
+ So you can say combinator or combine all.
+
+222
+00:17:01,620 --> 00:17:08,900
+ I'm going to use v3 here with the type argument a and list as a list of a and this returns an a.
+
+223
+00:17:08,900 --> 00:17:10,740
+ The implementation can be whatever.
+
+224
+00:17:10,740 --> 00:17:16,180
+ And in order to mark to the compiler that you need a combinator a in scope,
+
+225
+00:17:16,180 --> 00:17:20,260
+ where this combine all v3 method is going to be called,
+
+226
+00:17:20,260 --> 00:17:26,580
+ you only need to type restriction to a so that the compiler can find a combinator a in scope.
+
+227
+00:17:26,580 --> 00:17:29,860
+ So the marker is a colon combinator.
+
+228
+00:17:29,860 --> 00:17:33,700
+ Now, when you read real life skull code and your project were at your job,
+
+229
+00:17:33,700 --> 00:17:37,860
+ and you see a method that takes a type argument and then say colon some type,
+
+230
+00:17:37,860 --> 00:17:46,900
+ then that should be read as a marker a must have a given instance of combiner or combinator a in scope.
+
+231
+00:17:46,900 --> 00:17:52,580
+ So a colon combinator is identical to this other method definition that I wrote above.
+
+232
+00:17:53,220 --> 00:17:54,420
+ So I think you got the idea.
+
+233
+00:17:54,420 --> 00:17:57,780
+ A colon combinator is a form of type restriction.
+
+234
+00:17:57,780 --> 00:18:01,700
+ Let me tell you where context arguments are useful.
+
+235
+00:18:01,700 --> 00:18:08,580
+ So they're useful for a variety of patterns in functional programming and in the Scala language in general.
+
+236
+00:18:08,580 --> 00:18:13,780
+ Type classes are a massive use case for contextual arguments.
+
+237
+00:18:13,780 --> 00:18:17,620
+ And type classes are an advanced feature of functional programming in general.
+
+238
+00:18:17,620 --> 00:18:19,780
+ And they're quite outside the scope of this video.
+
+239
+00:18:19,780 --> 00:18:22,580
+ I have a bunch more on my YouTube channel.
+
+240
+00:18:22,580 --> 00:18:24,580
+ Then we have dependency injection.
+
+241
+00:18:26,900 --> 00:18:33,940
+ We have contextual abstractions for using code for some types but not for others.
+
+242
+00:18:33,940 --> 00:18:37,300
+ So context dependent functionality.
+
+243
+00:18:37,300 --> 00:18:43,940
+ That is the capability of restricting a piece of your logic to some types but not for others,
+
+244
+00:18:43,940 --> 00:18:48,340
+ depending on the contextual presence of given instances.
+
+245
+00:18:48,340 --> 00:18:54,740
+ And also a quite magical aspect of the Scala language which is type level programming.
+
+246
+00:18:54,740 --> 00:19:03,860
+ Then type level programming is a capability exhibited by the Scala language in which
+
+247
+00:19:03,860 --> 00:19:10,020
+ the compiler can generate types and prove relationships between types at compile time.
+
+248
+00:19:10,020 --> 00:19:13,380
+ This is very very powerful and also quite abstract.
+
+249
+00:19:13,380 --> 00:19:17,700
+ And contextual arguments provide the vehicle for achieving that.
+
+250
+00:19:18,340 --> 00:19:21,780
+ Alright, so we've talked a lot about contextual arguments.
+
+251
+00:19:21,780 --> 00:19:25,860
+ Let's talk about the second part of this video on contextual abstractions.
+
+252
+00:19:25,860 --> 00:19:28,340
+ And that is extension methods.
+
+253
+00:19:28,340 --> 00:19:33,940
+ Now, the truth is that in the Scala language you can add additional methods to a type.
+
+254
+00:19:33,940 --> 00:19:39,220
+ After it was defined, even if you have no control over the source of that type.
+
+255
+00:19:39,220 --> 00:19:45,220
+ And extension methods are heavily used in functional programming libraries such as cats or cats effect.
+
+256
+00:19:45,220 --> 00:19:47,060
+ And let me give an example.
+
+257
+00:19:47,060 --> 00:19:48,580
+ Let me define a case class.
+
+258
+00:19:48,580 --> 00:19:51,940
+ So case class person with a name.
+
+259
+00:19:51,940 --> 00:19:55,860
+ And this class has a simple method.
+
+260
+00:19:55,860 --> 00:19:57,300
+ Let's call this greet.
+
+261
+00:19:57,300 --> 00:20:01,540
+ So greet will return a string and say,
+
+262
+00:20:01,540 --> 00:20:05,620
+ "Hi, my name is name.
+
+263
+00:20:05,620 --> 00:20:07,460
+ I love Scala."
+
+264
+00:20:07,460 --> 00:20:10,660
+ Of course, I love Scala is optional.
+
+265
+00:20:10,660 --> 00:20:11,380
+ I hope you do.
+
+266
+00:20:11,380 --> 00:20:17,620
+ And after that, I'm going to create a particular structure that you have not seen in this course yet.
+
+267
+00:20:17,620 --> 00:20:18,900
+ And I'm going to write the following.
+
+268
+00:20:18,900 --> 00:20:23,780
+ I'm going to say extension, which is a contextual keyword in the Scala grammar.
+
+269
+00:20:23,780 --> 00:20:26,420
+ And I'm going to say extension string as a string.
+
+270
+00:20:28,180 --> 00:20:32,900
+ And I'm going to define a method called greet, which returns a string.
+
+271
+00:20:34,100 --> 00:20:40,500
+ And the implementation of this method is going to be new person without string dot greet.
+
+272
+00:20:42,740 --> 00:20:46,980
+ Now, this particular structure will then allow me to write, for example,
+
+273
+00:20:46,980 --> 00:20:53,940
+ Daniel's greeting as the string Daniel dot greet.
+
+274
+00:20:55,700 --> 00:20:56,580
+ Just like that.
+
+275
+00:20:56,580 --> 00:21:01,620
+ As if greet was part of the string Daniel.
+
+276
+00:21:01,620 --> 00:21:06,500
+ Obviously, if I had not written this piece with extension string string,
+
+277
+00:21:06,500 --> 00:21:10,020
+ then if I try compiling my code, then the greet method will not be found.
+
+278
+00:21:10,020 --> 00:21:14,020
+ Because greet does not belong to the string class.
+
+279
+00:21:14,020 --> 00:21:16,820
+ But if I write this structure here with an extension,
+
+280
+00:21:16,820 --> 00:21:21,780
+ then I will compile my code and it will compile just fine.
+
+281
+00:21:21,780 --> 00:21:27,300
+ And the reason is that the compiler normally would not compile the greet call on the string Daniel,
+
+282
+00:21:27,300 --> 00:21:32,740
+ but it would search for all possible extension methods on the string type.
+
+283
+00:21:32,740 --> 00:21:35,540
+ And because I created an extension to the string type,
+
+284
+00:21:35,540 --> 00:21:40,580
+ it will have access to this greet method, which I added later to the string class.
+
+285
+00:21:40,580 --> 00:21:42,820
+ And this gives enormous power.
+
+286
+00:21:42,820 --> 00:21:46,580
+ And that is because we can enhance existing classes to suit our needs.
+
+287
+00:21:46,580 --> 00:21:49,060
+ And this is called type enrichment.
+
+288
+00:21:50,420 --> 00:21:56,340
+ And colloquially in Scala 2, that was called pimping a type.
+
+289
+00:21:56,340 --> 00:21:59,220
+ Now, the term pimping went out of fashion.
+
+290
+00:21:59,220 --> 00:22:06,740
+ And this more boring type enrichment term was a little bit more prevalent in the Scala literature.
+
+291
+00:22:06,740 --> 00:22:11,860
+ So we have this notion of type enrichment through extension methods on existing types.
+
+292
+00:22:11,860 --> 00:22:15,940
+ Now, you can also add generic extension methods.
+
+293
+00:22:15,940 --> 00:22:23,140
+ So we can, for example, create a method to combine all the elements on a particular list,
+
+294
+00:22:23,140 --> 00:22:27,860
+ as if the combine all method belonged to the list type.
+
+295
+00:22:27,860 --> 00:22:35,380
+ And at the same time, this feature of extension methods in Scala can also be combined with contextual parameters,
+
+296
+00:22:35,380 --> 00:22:39,300
+ with great success and a lot of expressiveness and power.
+
+297
+00:22:39,300 --> 00:22:44,340
+ So I can define extension, which takes a type argument a.
+
+298
+00:22:44,340 --> 00:22:49,300
+ So considering a type a and a list as a list of a.
+
+299
+00:22:49,300 --> 00:22:51,140
+ Then I can define a method.
+
+300
+00:22:51,140 --> 00:22:52,580
+ Let's call this combine all.
+
+301
+00:22:52,580 --> 00:23:00,020
+ But I'm going to say combine all values so that we don't really have a name collision with this other combine all method.
+
+302
+00:23:00,580 --> 00:23:04,580
+ And combine all values will take a contextual argument.
+
+303
+00:23:04,580 --> 00:23:09,380
+ So using combinator as a combinator a.
+
+304
+00:23:09,380 --> 00:23:11,860
+ And this will return an a.
+
+305
+00:23:11,860 --> 00:23:14,340
+ And I can write the same implementation.
+
+306
+00:23:14,340 --> 00:23:18,740
+ So list dot reduce with combinator dot combine.
+
+307
+00:23:18,740 --> 00:23:25,780
+ Now with this little piece of code, then I can say val, let's call this the sum version 2.
+
+308
+00:23:26,500 --> 00:23:30,180
+ I can then say a list dot combine all values.
+
+309
+00:23:30,180 --> 00:23:33,060
+ Just like that.
+
+310
+00:23:33,060 --> 00:23:37,700
+ So I can recompile my code and the code will work just as fine.
+
+311
+00:23:37,700 --> 00:23:44,820
+ And if I do print line the sum v2, then we're still going to see the number 10 to the console.
+
+312
+00:23:44,820 --> 00:23:47,700
+ So we have it here.
+
+313
+00:23:47,700 --> 00:23:50,340
+ So notice how powerful our APIs can be.
+
+314
+00:23:50,340 --> 00:23:55,540
+ They seem as though they always belongs to the list class in this case.
+
+315
+00:23:55,540 --> 00:23:59,060
+ And also combining the power of contextual arguments.
+
+316
+00:23:59,060 --> 00:24:03,780
+ That will make for a very expressive and powerful set of APIs and language.
+
+317
+00:24:03,780 --> 00:24:07,620
+ Now contextual abstractions are an advanced set of features.
+
+318
+00:24:07,620 --> 00:24:10,580
+ And there are other forms of contextual abstractions that's called support,
+
+319
+00:24:10,580 --> 00:24:16,020
+ such as defining and inferring type classes, implicit conversions, or contextual function types.
+
+320
+00:24:16,020 --> 00:24:18,100
+ A bit outside the scope of this video.
+
+321
+00:24:18,100 --> 00:24:22,500
+ But I'm going to cover them in the advanced Scala course due shortly.
+
+322
+00:24:22,500 --> 00:24:26,660
+ So I hope you enjoyed this video and waiting for you in the Rock the JVM website,
+
+323
+00:24:26,660 --> 00:24:29,780
+ in the courses, and on the Rock the JVM YouTube channel.
+
+324
+00:24:29,780 --> 00:24:42,180
+ I'm Daniel, signing off.
+

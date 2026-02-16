@@ -1,0 +1,820 @@
+1
+00:00:00,000 --> 00:00:04,000
+ Alright, welcome back to Rock the JVM's Scala at Lightspeed.
+
+2
+00:00:04,000 --> 00:00:10,000
+ I'm Daniel and in this video we will discuss some of the advanced Scala features that you will probably see in real life.
+
+3
+00:00:10,000 --> 00:00:15,000
+ Alright, so I'm going to go back to the project that we started at the beginning of the series.
+
+4
+00:00:15,000 --> 00:00:21,000
+ If you're new to this video series, go back to the first video where we set up the initial files.
+
+5
+00:00:21,000 --> 00:00:25,000
+ Now, specifically for this video, I'm going to create a new Scala application.
+
+6
+00:00:25,000 --> 00:00:32,000
+ So under the com.rock, the JVM package, I'm going to select new Scala class, I'm going to name this advanced.
+
+7
+00:00:32,000 --> 00:00:41,000
+ I'm going to make it an object as before and I'm going to have it extend app so that we can run it on our computer as a standalone application.
+
+8
+00:00:41,000 --> 00:00:44,000
+ You can also test this code yourself.
+
+9
+00:00:44,000 --> 00:00:51,000
+ Now, the very first thing that I want to show you in this suite of advanced Scala features is lazy evaluation.
+
+10
+00:00:53,000 --> 00:00:58,000
+ Lazy evaluation means that an expression is not evaluated until it's first used.
+
+11
+00:00:58,000 --> 00:00:59,000
+ Let me give you an example.
+
+12
+00:00:59,000 --> 00:01:08,000
+ If I define a lazy val, let's call this a lazy value, and I give it a value of 2.
+
+13
+00:01:08,000 --> 00:01:13,000
+ The number 2 is not associated to a lazy value until it's used for the first time.
+
+14
+00:01:13,000 --> 00:01:16,000
+ And this can be illustrated with a side effect.
+
+15
+00:01:16,000 --> 00:01:23,000
+ So I'm going to create a lazy val, let's call this lazy value with side effect.
+
+16
+00:01:23,000 --> 00:01:30,000
+ As being, and I'm going to open and close some curly braces, this meaning I'm going to set up a code block.
+
+17
+00:01:30,000 --> 00:01:36,000
+ And as you learned before, a code block is an expression whose value is the value of the last expression.
+
+18
+00:01:36,000 --> 00:01:42,000
+ So I'm going to print line, for example, I am so very lazy.
+
+19
+00:01:42,000 --> 00:01:48,000
+ And at the end, I'm going to return the value 42 or 43 or something like that, a value.
+
+20
+00:01:48,000 --> 00:01:58,000
+ Now, as you learned at the beginning of the series, this being a code block has the value of 43 because it's the last expression to be evaluated.
+
+21
+00:01:58,000 --> 00:02:09,000
+ Now, if I run this application as a standalone application, nothing will be actually printed to the console, as you can see over here, except this IDE related stuff.
+
+22
+00:02:09,000 --> 00:02:16,000
+ If I take out the lazy modifier, if I run this application, I'm going to see I am so very lazy.
+
+23
+00:02:16,000 --> 00:02:23,000
+ That is because this code block was evaluated and it was attributed to the lazy value with side effect name.
+
+24
+00:02:23,000 --> 00:02:27,000
+ Now, the lazy value is evaluated when it's first used.
+
+25
+00:02:27,000 --> 00:02:41,000
+ So if I define a small value, let's call this eager value, as lazy value with side effect plus one, even though I'm not printing something out to the console myself,
+
+26
+00:02:41,000 --> 00:02:48,000
+ because I'm using lazy value with side effect for the first time, this code block will actually get evaluated.
+
+27
+00:02:48,000 --> 00:02:55,000
+ So if I run this application, I'm still going to see I am so very lazy.
+
+28
+00:02:55,000 --> 00:03:01,000
+ That is because lazy value with side effect was evaluated because it was used here in this other value.
+
+29
+00:03:01,000 --> 00:03:02,000
+ So I hope this makes sense.
+
+30
+00:03:02,000 --> 00:03:11,000
+ Lazy evaluation is useful in infinite collections and in some more rare use cases.
+
+31
+00:03:11,000 --> 00:03:18,000
+ The second advanced bit that I'm going to show you is, let's call them pseudo collections.
+
+32
+00:03:18,000 --> 00:03:26,000
+ Although they are not collections, they are their own types, but you can think of them as collections.
+
+33
+00:03:26,000 --> 00:03:30,000
+ And in particular, I'm referring to the option type and the try type.
+
+34
+00:03:30,000 --> 00:03:39,000
+ Let's call this pseudo collections in between air quotes so that we understand that option and try are their own types.
+
+35
+00:03:39,000 --> 00:03:40,000
+ They're not collections themselves.
+
+36
+00:03:40,000 --> 00:03:41,000
+ What do I mean by that?
+
+37
+00:03:41,000 --> 00:03:48,000
+ Option and try are very useful in some use cases in large code bases when you have unsafe methods.
+
+38
+00:03:48,000 --> 00:03:49,000
+ Let me define an unsafe method.
+
+39
+00:03:49,000 --> 00:03:55,000
+ Let's call this method which can return null.
+
+40
+00:03:55,000 --> 00:03:59,000
+ Taking null arguments and we declare that this method returns a string.
+
+41
+00:03:59,000 --> 00:04:02,000
+ And it might return a string or it might return null.
+
+42
+00:04:02,000 --> 00:04:03,000
+ Let's say it returns a string.
+
+43
+00:04:03,000 --> 00:04:05,000
+ Say hello, Scala.
+
+44
+00:04:05,000 --> 00:04:16,000
+ This is a valid string, but in large code bases when you don't have the time or you actually cannot read the implementation of a method,
+
+45
+00:04:16,000 --> 00:04:20,000
+ all you can do is hope that you will get an actual string.
+
+46
+00:04:20,000 --> 00:04:28,000
+ To guard yourself against nulls, you would have to do if method which can return null is actually equal to null.
+
+47
+00:04:28,000 --> 00:04:37,000
+ And then you can do some defensive code against null, which is what we normally do in other languages like C++ or Java,
+
+48
+00:04:37,000 --> 00:04:43,000
+ because null pointer exceptions or segmentation faults can actually wreak havoc through our code.
+
+49
+00:04:43,000 --> 00:04:47,000
+ But in Scala, we don't have to do that if we use the option type.
+
+50
+00:04:47,000 --> 00:04:48,000
+ So let me give you an example.
+
+51
+00:04:48,000 --> 00:04:55,000
+ Let's define an option as option from Scala.
+
+52
+00:04:55,000 --> 00:05:01,000
+ So option applied to method which can return null.
+
+53
+00:05:01,000 --> 00:05:07,000
+ You can think of an option as a kind of like a collection of one element at most.
+
+54
+00:05:07,000 --> 00:05:14,000
+ So a collection between air quotes which contains at most one element.
+
+55
+00:05:14,000 --> 00:05:21,000
+ If this method returns a valid value, then this collection, so to speak, contains the value inside.
+
+56
+00:05:21,000 --> 00:05:25,000
+ So this will be a sum with hello Scala.
+
+57
+00:05:25,000 --> 00:05:30,000
+ This is the subtype of the option abstract type.
+
+58
+00:05:31,000 --> 00:05:36,000
+ If the method which can return null actually returns null, the value here will be none.
+
+59
+00:05:36,000 --> 00:05:42,000
+ So sum with a value or none, which is a singleton object.
+
+60
+00:05:42,000 --> 00:05:47,000
+ None means the equivalent of null, except this is a regular value.
+
+61
+00:05:47,000 --> 00:05:50,000
+ So there's no risk in accessing illegal members or methods.
+
+62
+00:05:50,000 --> 00:05:56,000
+ If you know pattern matching from the previous video, you will be able to understand the following code.
+
+63
+00:05:56,000 --> 00:06:05,000
+ We can say val, let's call this string processing or string processed or something like that.
+
+64
+00:06:05,000 --> 00:06:07,000
+ You can pattern match this option.
+
+65
+00:06:07,000 --> 00:06:17,000
+ So you can say an option match and you can add a case for some string and you can return whatever you like.
+
+66
+00:06:17,000 --> 00:06:25,000
+ For example, I have obtained a valid string and you can inject the string inside.
+
+67
+00:06:26,000 --> 00:06:37,000
+ Or in case you get a none, which is the singleton object, of course, deriving from option, you can say I obtained nothing.
+
+68
+00:06:37,000 --> 00:06:45,000
+ So notice that there are no null checks that you would normally add for defensive code in other programming languages.
+
+69
+00:06:45,000 --> 00:06:51,000
+ So all you have to do is to wrap your unsafe code in an option and then do a pattern match on it.
+
+70
+00:06:51,000 --> 00:06:59,000
+ Or you can operate with options like you would on collections with map, flat map and filter.
+
+71
+00:06:59,000 --> 00:07:04,000
+ If you remember these functions, we discussed them on lists earlier in the video series.
+
+72
+00:07:04,000 --> 00:07:09,000
+ So this was option which guards against needing to check for nulls.
+
+73
+00:07:10,000 --> 00:07:15,000
+ There is another special pseudo collection, so to speak, that we call try.
+
+74
+00:07:15,000 --> 00:07:19,000
+ And this guards against methods which can throw exceptions.
+
+75
+00:07:19,000 --> 00:07:21,000
+ So let me define an unsafe method.
+
+76
+00:07:21,000 --> 00:07:26,000
+ I'm going to call this method which can throw exception.
+
+77
+00:07:26,000 --> 00:07:33,000
+ I'm declaring that this method can return a string, but in fact, I can throw new runtime exception.
+
+78
+00:07:33,000 --> 00:07:38,000
+ Exceptions are really bad for JVM programs like Scala programs or Java programs
+
+79
+00:07:38,000 --> 00:07:42,000
+ because they can interrupt or essentially break everything.
+
+80
+00:07:42,000 --> 00:07:47,000
+ And so we need to guard against exceptions with what you saw earlier with try catches.
+
+81
+00:07:47,000 --> 00:07:49,000
+ So normally we would say try.
+
+82
+00:07:49,000 --> 00:07:54,000
+ And then inside the try block, we would say method which can throw exception.
+
+83
+00:07:54,000 --> 00:07:58,000
+ And then we would catch all the exceptions that we like.
+
+84
+00:07:59,000 --> 00:08:08,000
+ So we can have case E call an exception, and then we would defend against this evil exception.
+
+85
+00:08:08,000 --> 00:08:19,000
+ Adding many layers of this will lead to very defensive code, adding complexity to large code bases and making code almost unreadable.
+
+86
+00:08:20,000 --> 00:08:26,000
+ And this is why Scala uses the try so-called pseudo collection in the following way.
+
+87
+00:08:26,000 --> 00:08:30,000
+ Let me define a try as try with a capital T.
+
+88
+00:08:30,000 --> 00:08:32,000
+ This is from Scalutil.
+
+89
+00:08:32,000 --> 00:08:36,000
+ And try can wrap something that can throw an exception.
+
+90
+00:08:36,000 --> 00:08:38,000
+ So method which can throw exception.
+
+91
+00:08:38,000 --> 00:08:49,000
+ And this is a try object containing either a string, if the method went correctly, or it can contain the exception that was thrown.
+
+92
+00:08:49,000 --> 00:08:55,000
+ So try will essentially swallow the exception that might be thrown, and wrap it in a regular value.
+
+93
+00:08:55,000 --> 00:09:11,000
+ So a try is a "collection" with either a value if the code went well, or an exception if the code threw one.
+
+94
+00:09:12,000 --> 00:09:16,000
+ And you can pattern match a try object in much the same way as we did with an option.
+
+95
+00:09:16,000 --> 00:09:25,000
+ For example, let's call this another string processing as a try match.
+
+96
+00:09:25,000 --> 00:09:30,000
+ And we can match against the two subtypes of try, which are success.
+
+97
+00:09:31,000 --> 00:09:36,000
+ So we have success, then I need to import from ScalaUtil containing a valid value.
+
+98
+00:09:36,000 --> 00:09:42,000
+ And I can say, I have obtained a valid string.
+
+99
+00:09:42,000 --> 00:09:45,000
+ And I can inject the valid value inside.
+
+100
+00:09:45,000 --> 00:09:47,000
+ Or we can have a case for failure.
+
+101
+00:09:47,000 --> 00:09:51,000
+ And I need to import failure from ScalaUtil.
+
+102
+00:09:52,000 --> 00:09:54,000
+ And the failure will contain an exception.
+
+103
+00:09:54,000 --> 00:09:56,000
+ And we can process that exception around.
+
+104
+00:09:56,000 --> 00:09:57,000
+ We can log it.
+
+105
+00:09:57,000 --> 00:09:58,000
+ We can do whatever you want.
+
+106
+00:09:58,000 --> 00:10:03,000
+ So I have obtained an exception.
+
+107
+00:10:03,000 --> 00:10:06,000
+ And I can inject that inside.
+
+108
+00:10:07,000 --> 00:10:13,000
+ So we use tries to avoid defensiveness with try catches.
+
+109
+00:10:13,000 --> 00:10:17,000
+ Instead, we process tries like we would on normal values.
+
+110
+00:10:17,000 --> 00:10:23,000
+ The try object and the option object can be processed like we did with collections.
+
+111
+00:10:23,000 --> 00:10:30,000
+ So both try and option have the map, flat map, and filter compositional functions,
+
+112
+00:10:30,000 --> 00:10:34,000
+ alongside some others that I'm not going to talk about in this video.
+
+113
+00:10:35,000 --> 00:10:40,000
+ So I'm actually going to add some green comments here.
+
+114
+00:10:40,000 --> 00:10:44,000
+ So that you can separate the sections much more easily.
+
+115
+00:10:44,000 --> 00:10:49,000
+ So I'm going to add some documentation comments here.
+
+116
+00:10:49,000 --> 00:10:53,000
+ So we have lazy evaluation and pseudo collections.
+
+117
+00:10:53,000 --> 00:10:55,000
+ Let me tell you another thing.
+
+118
+00:10:55,000 --> 00:11:01,000
+ Let me tell you how to evaluate something on another thread.
+
+119
+00:11:02,000 --> 00:11:05,000
+ In other words, asynchronous programming.
+
+120
+00:11:05,000 --> 00:11:13,000
+ This is done with another quote unquote pseudo collection known as a future.
+
+121
+00:11:13,000 --> 00:11:16,000
+ So let me define a val called a future.
+
+122
+00:11:16,000 --> 00:11:21,000
+ As future, which I will import from ScalaConcurrent.
+
+123
+00:11:21,000 --> 00:11:23,000
+ So I'm going to double click here.
+
+124
+00:11:24,000 --> 00:11:28,000
+ And to the constructor of future, I'm going to pass a code block.
+
+125
+00:11:28,000 --> 00:11:33,000
+ So this expression will be actually evaluated on another thread.
+
+126
+00:11:33,000 --> 00:11:39,000
+ Let's say print line loading with suspension points.
+
+127
+00:11:39,000 --> 00:11:41,000
+ Then let's do a thread sleep.
+
+128
+00:11:42,000 --> 00:11:46,000
+ With 1000 milliseconds.
+
+129
+00:11:46,000 --> 00:11:50,000
+ This call is very familiar for you Java programmers.
+
+130
+00:11:50,000 --> 00:11:55,000
+ Thread.sleep will actually block the running thread by one second.
+
+131
+00:11:55,000 --> 00:11:56,000
+ So 1000 milliseconds.
+
+132
+00:11:56,000 --> 00:11:59,000
+ Then let me print line.
+
+133
+00:12:00,000 --> 00:12:01,000
+ I have computed a value.
+
+134
+00:12:01,000 --> 00:12:04,000
+ And let me return the value.
+
+135
+00:12:04,000 --> 00:12:06,000
+ Let's say 67.
+
+136
+00:12:06,000 --> 00:12:14,000
+ Now, in order to run a future, we will need to import an execution context, which I'm going to import above.
+
+137
+00:12:14,000 --> 00:12:18,000
+ So right at the very top of the file, I'm going to import the following.
+
+138
+00:12:19,000 --> 00:12:26,000
+ Scala.concurrent.executionContext with a capital E.
+
+139
+00:12:26,000 --> 00:12:30,000
+ So executionContext.implicits with a capital I.
+
+140
+00:12:30,000 --> 00:12:32,000
+ And then global.
+
+141
+00:12:32,000 --> 00:12:34,000
+ I'm going to discuss implicits later in this video, shortly.
+
+142
+00:12:34,000 --> 00:12:36,000
+ So in a couple of minutes.
+
+143
+00:12:36,000 --> 00:12:45,000
+ Now, if you import this value, then notice that the compiler is now happy that this global value is available to run this future.
+
+144
+00:12:46,000 --> 00:12:48,000
+ is the equivalent of a thread pull.
+
+145
+00:12:48,000 --> 00:12:53,000
+ That is a collection of threads on which we can schedule the evaluation of this expression.
+
+146
+00:12:53,000 --> 00:13:01,000
+ So if we run this application, we will see both the I'm so very lazy and loading.
+
+147
+00:13:01,000 --> 00:13:09,000
+ But the main thread of the JVM, the main thread of the application, finished before this future had the chance to evaluate.
+
+148
+00:13:10,000 --> 00:13:18,000
+ That's a proof that this future, the block that I put here under the constructor of the future, was actually evaluated on another thread.
+
+149
+00:13:18,000 --> 00:13:29,000
+ If I do thread sleep for two seconds here under the main JVM thread, the main application thread, then this future will also have the chance to evaluate.
+
+150
+00:13:29,000 --> 00:13:31,000
+ Look at that, I have computed a value.
+
+151
+00:13:32,000 --> 00:13:34,000
+ Now, two things to mention here about the future.
+
+152
+00:13:34,000 --> 00:13:36,000
+ Notice the syntax.
+
+153
+00:13:36,000 --> 00:13:44,000
+ The future is actually future.apply, as you have seen in other instances throughout the rest of this mini-course.
+
+154
+00:13:44,000 --> 00:13:56,000
+ Now, in real-life code bases, we actually omit the parentheses over here, because this block will be passed as an argument to the future.apply method.
+
+155
+00:13:57,000 --> 00:13:58,000
+ So that was one thing.
+
+156
+00:13:58,000 --> 00:14:04,000
+ The second thing is that the future is a quote-unquote collection.
+
+157
+00:14:04,000 --> 00:14:12,000
+ So you can think of a future as a collection which contains a value when it's evaluated.
+
+158
+00:14:12,000 --> 00:14:21,000
+ So at the point when this code block is evaluated, this quote-unquote collection will actually contain a value.
+
+159
+00:14:22,000 --> 00:14:24,000
+ Until then, it does not contain any value.
+
+160
+00:14:24,000 --> 00:14:32,000
+ But a future is composable with map, flat map, and filter.
+
+161
+00:14:32,000 --> 00:14:39,000
+ In much the same way as we did with the other collections and pseudo-collections in this application.
+
+162
+00:14:39,000 --> 00:14:46,000
+ So we talked about pseudo-collections that we named in between air quotes in very theoretical terms.
+
+163
+00:14:47,000 --> 00:14:53,000
+ The future, try, and option types are called monads in functional programming.
+
+164
+00:14:53,000 --> 00:15:03,000
+ Monads are a very touchy subject in functional programming because they are very, very, very, very, quite very abstract and very hard to explain.
+
+165
+00:15:04,000 --> 00:15:08,000
+ Some people have tried explaining what monads are, but for now, just don't think about it.
+
+166
+00:15:08,000 --> 00:15:12,000
+ Think of future try and option as some sort of a collection.
+
+167
+00:15:12,000 --> 00:15:16,000
+ Now, the final thing that I'm going to show you in this video is implicits.
+
+168
+00:15:19,000 --> 00:15:28,000
+ Implicits are one of the most powerful features of the Skala compiler because they allow for some magic that you wouldn't have thought possible.
+
+169
+00:15:28,000 --> 00:15:31,000
+ There are two common use cases for using implicits.
+
+170
+00:15:31,000 --> 00:15:35,000
+ Use case number one is implicit arguments.
+
+171
+00:15:38,000 --> 00:15:48,000
+ So if I define a method with implicit args and this takes an implicit, this is a keyword, implicit value.
+
+172
+00:15:48,000 --> 00:15:54,000
+ Let's call this implicit arg as an int and returns, let's say, arg plus one.
+
+173
+00:15:55,000 --> 00:16:12,000
+ Then if I define an implicit val, let's call this my implicit int as equal, let's say, 46, then I can print line, for example, a method with implicit args without passing any arguments.
+
+174
+00:16:12,000 --> 00:16:22,000
+ That is because the compiler figures out that the method takes an implicit argument and tries to find a value of type int that it can inject here as an argument.
+
+175
+00:16:23,000 --> 00:16:37,000
+ So it actually does a method with implicit arguments with my implicit int, which is 46, and this method will return 47.
+
+176
+00:16:37,000 --> 00:16:39,000
+ Good.
+
+177
+00:16:39,000 --> 00:16:42,000
+ So this was the first use case with implicit arguments.
+
+178
+00:16:42,000 --> 00:16:44,000
+ I think this is pretty sensible.
+
+179
+00:16:44,000 --> 00:16:49,000
+ The second use case, which is much more magical, is implicit conversions.
+
+180
+00:16:49,000 --> 00:16:51,000
+ So let me give you an example.
+
+181
+00:16:52,000 --> 00:16:58,000
+ Usually we do implicit conversions to add methods to existing types over which we don't have any control over the code.
+
+182
+00:16:58,000 --> 00:17:02,000
+ So I'm going to define an implicit class.
+
+183
+00:17:02,000 --> 00:17:11,000
+ So an implicit class that I'm going to call my rich integer, which takes as constructor arguments an int, let's call this n.
+
+184
+00:17:11,000 --> 00:17:18,000
+ And this class has a method is even, which takes no arguments.
+
+185
+00:17:19,000 --> 00:17:25,000
+ And the return value of this function is whether n mod 2 is equal to zero.
+
+186
+00:17:25,000 --> 00:17:26,000
+ All right.
+
+187
+00:17:26,000 --> 00:17:32,000
+ So what I've done here is I've wrapped an integer into a class that I called my rich integer.
+
+188
+00:17:32,000 --> 00:17:40,000
+ And this my rich integer has a single method called is even, which returns true if this wrapped int is actually even.
+
+189
+00:17:40,000 --> 00:17:41,000
+ So n mod 2 is equal to zero.
+
+190
+00:17:41,000 --> 00:17:43,000
+ Now, watch what I'm writing.
+
+191
+00:17:43,000 --> 00:17:55,000
+ I can say the number 23 dot is even in this case, even though the is even method does not belong to the int class.
+
+192
+00:17:55,000 --> 00:18:02,000
+ So if I remove the implicit modifier for this class, notice that this code turns red because the method is not available for the int type.
+
+193
+00:18:03,000 --> 00:18:12,000
+ But if I do implicit class my rich integer, the compiler is smart enough to figure out, okay, this code does not normally compile.
+
+194
+00:18:12,000 --> 00:18:18,000
+ Let me find an implicit wrapper over this value over here, which is an int.
+
+195
+00:18:19,000 --> 00:18:24,000
+ Maybe I can find one and maybe just maybe that class has an is even method.
+
+196
+00:18:24,000 --> 00:18:34,000
+ So the compiler is kind enough to do new my rich integer with the number 23 and then call the is even method on that.
+
+197
+00:18:35,000 --> 00:18:40,000
+ And this is pretty magical because it makes Scala an incredibly expressive language, but this is also dangerous.
+
+198
+00:18:40,000 --> 00:18:44,000
+ So use implicit with very, very much care.
+
+199
+00:18:44,000 --> 00:18:53,000
+ All right, so the Scala at Lightspeed mini course has come to an end.
+
+200
+00:18:53,000 --> 00:18:56,000
+ I'm Daniel for Rock the JVM and I hope this was useful and fun.
+
+201
+00:18:56,000 --> 00:18:59,000
+ I will be waiting for you in the other Rock the JVM courses.
+
+202
+00:18:59,000 --> 00:19:02,000
+ And until next time, thank you for watching.
+
+203
+00:19:05,000 --> 00:19:09,000
+ I'm Daniel for Rock the JVM.
+
+204
+00:19:09,000 --> 00:19:12,000
+ I'm Daniel for Rock the JVM.
+
+205
+00:19:12,000 --> 00:19:14,000
+ I'm Daniel for Rock the JVM.
+

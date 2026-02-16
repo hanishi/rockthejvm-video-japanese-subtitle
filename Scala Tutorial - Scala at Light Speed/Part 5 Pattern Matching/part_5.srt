@@ -1,0 +1,396 @@
+1
+00:00:00,560 --> 00:00:06,480
+ Hi and welcome back to Rock the JVM's Scala at Lightspeed. I'm Daniel and in this video we will
+
+2
+00:00:06,480 --> 00:00:13,440
+ discuss one of Scala's most powerful features which is pattern matching. Now I'm going to go
+
+3
+00:00:13,440 --> 00:00:18,560
+ back to the project that we created at the beginning of this mini course and if you are
+
+4
+00:00:18,560 --> 00:00:24,160
+ new to this video series go back to the beginning of the course where we set up this initial project
+
+5
+00:00:24,160 --> 00:00:30,000
+ and we discuss the infrastructure that we are going to use throughout this series. Now under
+
+6
+00:00:30,000 --> 00:00:35,200
+ the package com.rock.jvm that I created at the very beginning I'm going to create a dedicated
+
+7
+00:00:35,200 --> 00:00:40,720
+ application for this video so I'm going to right click new Scala class I'm going to name this
+
+8
+00:00:40,720 --> 00:00:47,120
+ pattern matching I'm going to make it an object as we did with the previous applications and I'm going
+
+9
+00:00:47,120 --> 00:00:54,080
+ to have it extend app so that we can actually run this so you can run this on your own computer
+
+10
+00:00:54,160 --> 00:00:59,520
+ if you want to test some code. All right now the first thing that I'm going to talk about pattern
+
+11
+00:00:59,520 --> 00:01:05,520
+ matching and let me collapse my menu so that you can see my code is what you may have seen in other
+
+12
+00:01:05,520 --> 00:01:11,280
+ programming languages like Java or C or C++ which is the switch statement.
+
+13
+00:01:11,280 --> 00:01:18,000
+ So I'm going to use pattern matching as some kind of a switch expression.
+
+14
+00:01:20,400 --> 00:01:27,920
+ What do I mean by that? Let me create a value of a type int let's call this an integer as having the
+
+15
+00:01:27,920 --> 00:01:37,040
+ value 55. Now you can match this integer against a number of cases instead of using if else chains
+
+16
+00:01:37,040 --> 00:01:45,360
+ so let me give you an example let me define a value called all ordering or order as and watch what I'm
+
+17
+00:01:45,360 --> 00:01:53,360
+ writing an integer space match which is a keyword in Scala and then I'm going to open and close some curly
+
+18
+00:01:53,360 --> 00:02:02,880
+ braces and inside I'm going to add cases so in case I get one I will return the string first in case I get
+
+19
+00:02:02,880 --> 00:02:17,520
+ I will return the string third and in case I get everything else which is denoted by this underscore
+
+20
+00:02:17,520 --> 00:02:25,520
+ the equivalent of the default case in the other languages I will return an integer plus the suffix
+
+21
+00:02:25,520 --> 00:02:37,600
+ th so if I want to print line this order value so print line order I will return 55th which is the
+
+22
+00:02:37,600 --> 00:02:46,560
+ description of the number 55 it takes a bit of time to compile so 55 th now notice this this pattern
+
+23
+00:02:46,560 --> 00:02:54,400
+ match structure is actually an expression so pattern match is an expression much like anything else in
+
+24
+00:02:54,400 --> 00:03:00,240
+ scala that means it can be reduced to a value so the value of this pattern match expression is either
+
+25
+00:03:00,240 --> 00:03:07,840
+ the string first second third or the string composed by the integer plus the suffix th and because it's an
+
+26
+00:03:07,840 --> 00:03:15,120
+ expression we can assign it to a value so pattern matching is the equivalent of a switch expression
+
+27
+00:03:15,120 --> 00:03:22,080
+ that you may have seen in other languages but pattern matching takes things to a whole another level
+
+28
+00:03:22,080 --> 00:03:28,960
+ because pattern matching is able to also deconstruct data structures into its constituent parts let me
+
+29
+00:03:28,960 --> 00:03:35,520
+ give you an example let me create a small case class that I'm going to name person which has a name
+
+30
+00:03:35,520 --> 00:03:42,080
+ as a string and an age as an int we discussed about case classes in the object orientation video
+
+31
+00:03:42,080 --> 00:03:48,800
+ in this mini course so if you don't know what a case class is go ahead and watch that video first all right
+
+32
+00:03:48,800 --> 00:03:53,680
+ so having this defined this case class I will create an instance of that case class let me create a value
+
+33
+00:03:53,680 --> 00:04:02,960
+ called bob as a new person with the string bob and age let's say 43 or something like that you know
+
+34
+00:04:02,960 --> 00:04:08,480
+ from the object orientation lecture when we discussed case classes that they don't need to be instantiated
+
+35
+00:04:08,480 --> 00:04:15,120
+ with a keyword new because the person case class also has a companion object with an apply method so this is
+
+36
+00:04:15,120 --> 00:04:27,520
+ actually person dot apply with the string bob and the age 43 all right now that's not the uh the goal that
+
+37
+00:04:27,520 --> 00:04:33,200
+ i wanted to show here for the case class what i want to show is how to deconstruct a value that you
+
+38
+00:04:33,200 --> 00:04:40,080
+ obtain from somewhere else and decompose it into its constituent parts let me give you an example let me create a
+
+39
+00:04:40,080 --> 00:04:51,280
+ string called person greeting as bob space match and opening close and curly braces and i will add my first
+
+40
+00:04:51,280 --> 00:04:57,120
+ case but instead of passing a definitive value as we did above with the switch expression i'm going to
+
+41
+00:04:57,120 --> 00:05:07,520
+ pass a whole structure like person with a name and an age and i will return the following string hi my name
+
+42
+00:05:07,520 --> 00:05:18,080
+ is dollar n so the id has already created an s interpolated string for me my name is n and i am
+
+43
+00:05:19,280 --> 00:05:27,840
+ age years old this is more like a kid's greeting but you get the idea so this case over here is not
+
+44
+00:05:27,840 --> 00:05:33,200
+ necessarily matching against a definitive value like we did above but it matches bob the value that i'm
+
+45
+00:05:33,200 --> 00:05:40,880
+ matching against against a whole entire structure so if bob conforms to the structure person with a name
+
+46
+00:05:40,880 --> 00:05:50,000
+ and an age then let n and a be the constituent parts of bob as a person so if i have n and a as the
+
+47
+00:05:50,000 --> 00:05:57,680
+ constituent parts of person i can then reuse them at the right hand side of this arrow sign and obviously
+
+48
+00:05:57,680 --> 00:06:05,680
+ in case i get something else i will return something else as the string so if i print line person greeting
+
+49
+00:06:05,680 --> 00:06:12,320
+ you will see hi my name is bob and i am 43 years old that is because the pattern match expression
+
+50
+00:06:12,320 --> 00:06:19,680
+ is able to match bob against this structure and it will automatically assign n to the string bob and a
+
+51
+00:06:19,680 --> 00:06:25,680
+ to the number 43 and it will inject them into this s interpolated string so if i run this application
+
+52
+00:06:25,680 --> 00:06:33,520
+ again you will see hi my name is bob and i'm 43 years old now in the object orientation video i mentioned
+
+53
+00:06:33,520 --> 00:06:39,680
+ that there are a couple of benefits to defining case classes and one of those benefits now is being able
+
+54
+00:06:39,680 --> 00:06:45,760
+ to deconstruct them in pattern matching so pattern matching is available mostly for case classes it's
+
+55
+00:06:45,760 --> 00:06:50,640
+ also available for normal classes if you do a lot of magic behind the scenes i'm not going to talk
+
+56
+00:06:50,640 --> 00:06:55,600
+ about that because that's really advanced so just bear in mind that pattern matching is only available
+
+57
+00:06:55,600 --> 00:07:02,000
+ for case classes for now good so pattern matching can deconstruct case classes
+
+58
+00:07:02,000 --> 00:07:11,120
+ now pattern matching can deconstruct some other data structures as well for example deconstructing tuples
+
+59
+00:07:13,840 --> 00:07:24,480
+ so let me create a tuple as the tuple bon jovi which is one of my favorite bands and the genre rock
+
+60
+00:07:24,480 --> 00:07:32,080
+ for example you know from the earlier video that we can create tuples by putting some values here
+
+61
+00:07:32,080 --> 00:07:38,000
+ separated by comma inside these parentheses and this is a tuple you python users i'm sure you know what i'm
+
+62
+00:07:38,000 --> 00:07:44,480
+ talking about now scala can deconstruct these tuples into their constituent parts for example let's call
+
+63
+00:07:44,480 --> 00:07:55,360
+ this band description as a tuple space match and open and close some curly braces and i can pass in a case
+
+64
+00:07:55,360 --> 00:08:03,920
+ that describes the structure of a tuple let's call this band comma genre and on the right hand side of the
+
+65
+00:08:03,920 --> 00:08:17,600
+ arrow sign i will say that band belongs to the genre dollar genre and in case i get something else i will
+
+66
+00:08:17,600 --> 00:08:20,960
+ return the string i don't know what you're talking about
+
+67
+00:08:26,160 --> 00:08:34,880
+ all right so if this tuple conforms to a two-member tuple structure then let band and genre be the
+
+68
+00:08:34,880 --> 00:08:41,280
+ members of that tuple so that i can then reuse them into this s interpolated string so notice how i'm
+
+69
+00:08:41,280 --> 00:08:47,520
+ reading this pattern match expression if the tuple conforms to this structure then let these be the
+
+70
+00:08:47,520 --> 00:08:52,480
+ members the constituent parts of this tuple so that i can then reuse them on the right hand side
+
+71
+00:08:53,440 --> 00:09:00,320
+ you can also deconstruct more complex data structures as well for example decomposing lists so let me
+
+72
+00:09:00,320 --> 00:09:11,600
+ create a list as the list one two three this is a list of integers so if i create for example val list
+
+73
+00:09:11,600 --> 00:09:22,080
+ description as a list space match space open and close curly brace i can create a case that describes the
+
+74
+00:09:22,080 --> 00:09:29,120
+ the structure of a list that takes something so the underscore means absolutely anything the number two
+
+75
+00:09:29,120 --> 00:09:40,080
+ and something else and i will return the string for example list containing two on its second position
+
+76
+00:09:40,080 --> 00:09:48,880
+ and in case i get something else i will return unknown list or something like that the underscore presence is not
+
+77
+00:09:48,880 --> 00:09:59,680
+ mandatory but if the pattern match doesn't match anything it will throw a match error which will
+
+78
+00:09:59,680 --> 00:10:06,480
+ crash your program this is why for best practice we normally always add an underscore case over here
+
+79
+00:10:06,480 --> 00:10:13,920
+ good so notice how we can describe some complex data structures like a structure of a list whose first
+
+80
+00:10:13,920 --> 00:10:18,800
+ element is something that we don't care about the second element is two the third element is something
+
+81
+00:10:18,800 --> 00:10:24,720
+ that we don't care about and that's it so a four element list will not match this pattern a two
+
+82
+00:10:24,720 --> 00:10:30,320
+ element list will not match this pattern and so on and so forth the list must have exactly three elements
+
+83
+00:10:30,320 --> 00:10:35,280
+ the first and the third of which we don't care about and the second must be exactly two so notice
+
+84
+00:10:35,280 --> 00:10:42,160
+ pattern matching is much more powerful than a simple switch one more thing about pattern matching pattern
+
+85
+00:10:42,160 --> 00:10:52,160
+ matching will try all cases in sequence so for example if i inverse these cases so if i put this case
+
+86
+00:10:52,160 --> 00:10:57,920
+ first and the case with the list of three elements last because this wild card this underscore matches
+
+87
+00:10:57,920 --> 00:11:03,840
+ absolutely anything the string that will be returned is unknown list that is because pattern matching will
+
+88
+00:11:03,840 --> 00:11:11,360
+ try all the cases in sequence so let me change that back now i will end this video with the fact that
+
+89
+00:11:11,360 --> 00:11:17,040
+ pattern matching is much more powerful than we've written here with lots of complex data structure
+
+90
+00:11:17,040 --> 00:11:24,720
+ deconstruction name binding and so much more but just to quote tim ferris and his minimum effective dose
+
+91
+00:11:24,720 --> 00:11:31,600
+ this code is basically everything that you will need to be able to work with 90 of all pattern matching
+
+92
+00:11:31,600 --> 00:11:37,280
+ use cases that you will ever see in code bases all right so i hope this was useful in the next video
+
+93
+00:11:37,280 --> 00:11:42,880
+ we will talk about some advanced skull stuff that you will probably see in real life if you liked this
+
+94
+00:11:42,880 --> 00:11:47,360
+ video and found it useful go ahead and click the like button and subscribe to the rock the jvm channel
+
+95
+00:11:47,360 --> 00:11:53,840
+ and i'll be posting more free goodies here this video series is also available as a free online course
+
+96
+00:11:53,840 --> 00:11:59,600
+ at rock the jvm.com where you will also have the option to download these videos for your offline use
+
+97
+00:11:59,600 --> 00:12:06,240
+ and on the rock the jvm site we also have hundreds of hours of premium content dedicated to scala
+
+98
+00:12:06,240 --> 00:12:11,760
+ functional programming akka apache spark and so much more so go ahead and check out rock the jvm.com
+
+99
+00:12:11,760 --> 00:12:24,640
+ and i'll be waiting for you in the next video
+
