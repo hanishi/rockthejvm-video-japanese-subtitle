@@ -1,0 +1,940 @@
+1
+00:00:00,320 --> 00:00:02,400
+ - Hey everyone, this is Daniel for Rock the JVM
+
+2
+00:00:02,400 --> 00:00:03,860
+ and you are watching a tutorial
+
+3
+00:00:03,860 --> 00:00:07,680
+ on Scala metaprogramming basics with inlines.
+
+4
+00:00:07,680 --> 00:00:09,400
+ So what is metaprogramming?
+
+5
+00:00:09,400 --> 00:00:13,000
+ Metaprogramming means the ability to program
+
+6
+00:00:13,000 --> 00:00:14,340
+ with other programs.
+
+7
+00:00:14,340 --> 00:00:18,380
+ So code that manipulates other Scala code at compile time.
+
+8
+00:00:18,380 --> 00:00:20,000
+ Now, obviously I'll assume that you're familiar
+
+9
+00:00:20,000 --> 00:00:22,100
+ with Scala basics, you won't need too much
+
+10
+00:00:22,100 --> 00:00:23,540
+ to follow this tutorial,
+
+11
+00:00:23,540 --> 00:00:25,440
+ but I will recommend you try this out for yourself.
+
+12
+00:00:25,440 --> 00:00:27,200
+ I'll leave a link to the GitHub repository
+
+13
+00:00:27,200 --> 00:00:29,380
+ in the description and I'll also include
+
+14
+00:00:29,380 --> 00:00:32,560
+ a written form on the blog on Rock the JVM.
+
+15
+00:00:32,560 --> 00:00:34,700
+ Now this tutorial is standalone
+
+16
+00:00:34,700 --> 00:00:37,480
+ and I recommend that you run this yourself,
+
+17
+00:00:37,480 --> 00:00:41,260
+ but it's part of a long form course on Scala 3 macros
+
+18
+00:00:41,260 --> 00:00:43,560
+ and metaprogramming that I've just published.
+
+19
+00:00:43,560 --> 00:00:46,580
+ So metaprogramming is easily the most magical feature set
+
+20
+00:00:46,580 --> 00:00:48,420
+ of Scala that very few people understand
+
+21
+00:00:48,420 --> 00:00:50,100
+ and many were looking to learn more about
+
+22
+00:00:50,100 --> 00:00:53,180
+ because documentation is pretty theoretical.
+
+23
+00:00:53,180 --> 00:00:55,420
+ So I made this course to cover pretty much everything
+
+24
+00:00:55,420 --> 00:00:58,540
+ you need to know about inlines, macros, AST manipulation,
+
+25
+00:00:58,540 --> 00:01:01,720
+ pretty much all you need to be a master of metaprogramming.
+
+26
+00:01:01,720 --> 00:01:04,900
+ We write thousands of lines of code in the course.
+
+27
+00:01:04,900 --> 00:01:10,900
+ And we also have two real life projects to give you some real practice with metaprogramming.
+
+28
+00:01:10,900 --> 00:01:16,900
+ And by the end of this course, you should have all the skills of a senior developer to be able to write libraries
+
+29
+00:01:16,900 --> 00:01:21,040
+ and tools and correctness checkers and various productivity improvements for your team.
+
+30
+00:01:21,040 --> 00:01:25,220
+ So if you're interested in the subject, I recommend that you check it out.
+
+31
+00:01:25,220 --> 00:01:27,220
+ I'm going to leave a link in the description.
+
+32
+00:01:27,220 --> 00:01:35,220
+ Now to this day, the power of Scala metaprogramming is at this point unmatched compared to other programming languages.
+
+33
+00:01:35,220 --> 00:01:41,220
+ There are many languages that do offer metaprogramming capabilities, for example, Lisp, but they lose types.
+
+34
+00:01:41,220 --> 00:01:46,400
+ There are other languages that are strongly typed, but they only offer metaprogramming as text processors or compiler plugins.
+
+35
+00:01:46,400 --> 00:01:54,400
+ But nobody offers the kind of well-typed macros and metaprogramming in the same language in the same compiler pipeline as Scala does.
+
+36
+00:01:54,400 --> 00:02:01,400
+ So I really encourage you to learn about macros and metaprogramming in general just for you to understand what is possible in a programming language.
+
+37
+00:02:01,400 --> 00:02:06,180
+ So, with that being said, let me go to the actual code itself.
+
+38
+00:02:06,180 --> 00:02:13,020
+ So I've just created a very basic Scala project, so here under buildSBT you can create your own Scala project.
+
+39
+00:02:13,020 --> 00:02:17,380
+ I've just added a couple of Scala compiler options.
+
+40
+00:02:17,380 --> 00:02:27,720
+ One that is very important for us is this thing called -x print post inlining, which essentially prints the entire Scala code that will end up being compiled after inlining.
+
+41
+00:02:27,720 --> 00:02:36,800
+ So after the metaprogramming part, and this will tell us essentially what's happening in the compiler that we are going to demonstrate in this tutorial.
+
+42
+00:02:36,800 --> 00:02:40,500
+ So we're going to focus our attention on this inline basic thing.
+
+43
+00:02:40,500 --> 00:02:42,100
+ My object is called simple inlines.
+
+44
+00:02:42,100 --> 00:02:43,840
+ I might as well name my file that way.
+
+45
+00:02:43,840 --> 00:02:45,700
+ So simple inlines.
+
+46
+00:02:45,700 --> 00:02:51,480
+ Okay, and I'm going to collapse buildSBT in my file explorer and let's focus on inlines.
+
+47
+00:02:51,480 --> 00:02:55,080
+ All right, so if I start with a very simple function like increment.
+
+48
+00:02:55,080 --> 00:03:01,080
+ increment with an x that is an int, returns an int, and this is x plus one, let's say.
+
+49
+00:03:01,080 --> 00:03:04,160
+ If I have a val, let's call this a number, which is three.
+
+50
+00:03:04,160 --> 00:03:13,160
+ If I invoke this increment function, I'll obtain, obviously, the number four, so I'm going to have val four as increment a number.
+
+51
+00:03:13,160 --> 00:03:22,080
+ Now, let me check SPT output just for you to see what kind of output we should expect and the kind of tracking that we're going to do
+
+52
+00:03:22,080 --> 00:03:25,120
+ when marking these functions inline.
+
+53
+00:03:25,120 --> 00:03:28,080
+ So let me go not save this file yet.
+
+54
+00:03:28,080 --> 00:03:30,160
+ I'm going to call SBT.
+
+55
+00:03:30,160 --> 00:03:35,160
+ And in my SBT output, I'm going to hit tilde compile.
+
+56
+00:03:35,160 --> 00:03:42,160
+ And we're going to obtain essentially the final code that will be compiled after inline.
+
+57
+00:03:42,160 --> 00:03:51,240
+ So currently we have this simple inline extends object and whatever, and we have, okay, just a basic object.
+
+58
+00:03:51,240 --> 00:03:56,240
+ Now, if I save this little file, simple inlines, we're going to essentially recompile everything.
+
+59
+00:03:56,240 --> 00:04:08,320
+ And now we're going to have the method increment a number is three and val four is the invocation of this function comrack.jvm inline simple inlines increment on the a number variable.
+
+60
+00:04:08,320 --> 00:04:13,280
+ So this is the final code that will be compiled after processing or metaprogramming.
+
+61
+00:04:13,280 --> 00:04:23,280
+ So the way that scholar metaprogramming work is that everything that manipulates scholar code is going to essentially generate the final code that will be compiled.
+
+62
+00:04:23,280 --> 00:04:29,280
+ And then that code is essentially well typed scholar code that will be subject to the rest of the compiler pipeline.
+
+63
+00:04:29,280 --> 00:04:39,280
+ Okay, so we can make simple methods, obviously, we can call them like we do in a regular skull code, this is nothing rocket science.
+
+64
+00:04:39,280 --> 00:04:46,280
+ But if I can create a method increment, I'm going to call this inc with the same signature, but I'm going to mark it inline.
+
+65
+00:04:46,280 --> 00:04:52,280
+ Essentially, what inline does is it copies the implementation at the call site.
+
+66
+00:04:52,280 --> 00:05:06,280
+ So if I say val four is instead of increment, we have inc on a number, if I save this, if I save this file, the val four here is copying a number,
+
+67
+00:05:06,280 --> 00:05:15,280
+ or it's copying the implementation of x plus one, referring to x from wherever it was passed as an argument, which was the a number.
+
+68
+00:05:15,280 --> 00:05:21,280
+ So what we're going to obtain here in the output is the val four is the variable a number plus one.
+
+69
+00:05:21,280 --> 00:05:29,280
+ So essentially, this compiles to or reduces to a number plus one at compile time.
+
+70
+00:05:29,280 --> 00:05:34,280
+ And the compile time thing is very important because inlines are surprisingly powerful tool for meta programming.
+
+71
+00:05:34,280 --> 00:05:42,280
+ Now we can also inline the arguments to a function by passing them explicitly rather than evaluating them first before a function invocation.
+
+72
+00:05:42,280 --> 00:05:52,280
+ So for example, if I have, let's call this product or result as inc on let's say two times a number plus one.
+
+73
+00:05:52,280 --> 00:05:56,280
+ So this is going to be two times three plus one plus one, that's going to be eight.
+
+74
+00:05:56,280 --> 00:06:02,280
+ And having written this expression, let's check what the compiler output says.
+
+75
+00:06:02,280 --> 00:06:06,280
+ So this generated the entire code again.
+
+76
+00:06:06,280 --> 00:06:11,280
+ This is not necessarily something that I'm interested in.
+
+77
+00:06:11,280 --> 00:06:12,280
+ Okay.
+
+78
+00:06:12,280 --> 00:06:13,280
+ So look at this.
+
+79
+00:06:13,280 --> 00:06:20,280
+ We have the value eight saying the val proxy, which is two times a number plus one, and then we have this thing plus one.
+
+80
+00:06:20,280 --> 00:06:38,280
+ So this reduces to, so this reduces to the little block of code saying val, let's call this proxy as two times a number plus one.
+
+81
+00:06:38,280 --> 00:06:41,280
+ And then we have proxy plus one, and then we have proxy plus one.
+
+82
+00:06:41,280 --> 00:06:42,280
+ This is what the code says.
+
+83
+00:06:42,280 --> 00:06:48,280
+ So we have an intermediate variable and then we're doing this proxy plus one.
+
+84
+00:06:48,280 --> 00:06:55,280
+ Now, with a feature called inline arguments, we can define a little method.
+
+85
+00:06:55,280 --> 00:06:57,280
+ Let's call this inline function.
+
+86
+00:06:57,280 --> 00:07:00,280
+ And I'm going to call this inc with inline arguments.
+
+87
+00:07:00,280 --> 00:07:05,280
+ So inc with inline arguments, I'm going to have inline x as an int.
+
+88
+00:07:05,280 --> 00:07:08,280
+ I'm going to return x plus one.
+
+89
+00:07:08,280 --> 00:07:19,280
+ Well, in this case, val eight version two as inc ia with two times a number plus one.
+
+90
+00:07:19,280 --> 00:07:26,280
+ In this case, it inlines where it expands the variable without evaluating it first directly in the method call.
+
+91
+00:07:26,280 --> 00:07:38,280
+ So this should reduce to, so reduces to two times a number plus one, which is the argument, plus one, which is the implementation.
+
+92
+00:07:38,280 --> 00:07:43,280
+ So this is going to be the final expression that this will generate.
+
+93
+00:07:43,280 --> 00:07:46,280
+ So as I'm saving the file, let me scroll down.
+
+94
+00:07:46,280 --> 00:07:47,280
+ So look at this.
+
+95
+00:07:47,280 --> 00:07:54,280
+ The final version two is two times a number plus one, which is the argument, and then plus one, which is from the method body.
+
+96
+00:07:54,280 --> 00:08:00,280
+ So arguments can also be expanded exactly as they are without having to be computed first.
+
+97
+00:08:00,280 --> 00:08:12,280
+ Now, the interesting thing is that whenever the compiler sees the argument in the method body, it will simply expand that to whatever the expression was that we passed in the method invocation, which is very similar conceptually.
+
+98
+00:08:12,280 --> 00:08:19,280
+ So conceptually, similar to a by name invocation.
+
+99
+00:08:19,280 --> 00:08:21,280
+ But this is done at compile time directly.
+
+100
+00:08:21,280 --> 00:08:28,280
+ So these are expanded within the method body.
+
+101
+00:08:28,280 --> 00:08:32,280
+ And only inline methods can have inline arguments.
+
+102
+00:08:32,280 --> 00:08:37,280
+ So again, inline arguments are expanded directly wherever the argument is being used.
+
+103
+00:08:37,280 --> 00:08:40,280
+ And if you use them multiple times, it will be expanded multiple times.
+
+104
+00:08:40,280 --> 00:08:44,280
+ So if I save this file, and I check the compiling difference.
+
+105
+00:08:44,280 --> 00:08:45,280
+ Look at this.
+
+106
+00:08:45,280 --> 00:08:48,280
+ We have two times this sucker plus two times this sucker plus one.
+
+107
+00:08:48,280 --> 00:08:49,280
+ Okay.
+
+108
+00:08:49,280 --> 00:08:55,280
+ So every time you have the argument, it will be expanded or it will be inlined.
+
+109
+00:08:55,280 --> 00:09:00,280
+ The difference between inline argument and the by name invocation is that this is done at compile time.
+
+110
+00:09:00,280 --> 00:09:08,280
+ So only that the args are expanded at compile time.
+
+111
+00:09:08,280 --> 00:09:13,280
+ So this fact of the expansion at compile time is super, super, super important.
+
+112
+00:09:13,280 --> 00:09:20,280
+ And this will allow us to do metaprogramming with the kind of techniques that I'm going to show you throughout the rest of this course.
+
+113
+00:09:20,280 --> 00:09:33,280
+ Now a practical direct implication of using inlines aside from the kind of information that's being serviced at compile time is that inlines can be used for performance optimization.
+
+114
+00:09:33,280 --> 00:09:38,280
+ Because instead of method calls, you have the method body directly injected into the code.
+
+115
+00:09:38,280 --> 00:09:41,280
+ And I can give you a quick example for that.
+
+116
+00:09:41,280 --> 00:09:45,280
+ So let me define a method test inline.
+
+117
+00:09:45,280 --> 00:09:55,280
+ And I'm going to replicate an example that I just saw on the internet a couple of days ago, where people were bragging that JavaScript is fast.
+
+118
+00:09:55,280 --> 00:10:00,280
+ Well, within lines, you can write pretty darn fast Scala code on the JVM.
+
+119
+00:10:00,280 --> 00:10:05,280
+ So I'm going to replicate a little for loop or a double for loop.
+
+120
+00:10:05,280 --> 00:10:16,280
+ So people used to have like an array, so array of like 10,000 elements, and then it would have a 4i from 0 to the length of the array.
+
+121
+00:10:16,280 --> 00:10:21,280
+ So from one to 10,000, so they will do a double for loop.
+
+122
+00:10:21,280 --> 00:10:32,280
+ So for J as 0 to 10k, they would do something like array of i plus equals a random constant.
+
+123
+00:10:32,280 --> 00:10:37,280
+ And out of this would have array of i plus equals another random constant.
+
+124
+00:10:37,280 --> 00:10:42,280
+ And they would measure the time it takes for something like this to happen on various languages.
+
+125
+00:10:42,280 --> 00:10:44,280
+ And Python was surprisingly slow and whatever.
+
+126
+00:10:44,280 --> 00:10:52,280
+ But I wanted to give you a little demonstration of how this looks like for regular Scala code versus inline Scala code.
+
+127
+00:10:52,280 --> 00:10:56,280
+ So I'm going to replicate a little for loop via a little method.
+
+128
+00:10:56,280 --> 00:11:05,280
+ So I'm going to say loop with an, so I'm going to have an inline, inline def loop with a little type parameter.
+
+129
+00:11:05,280 --> 00:11:15,280
+ Let's say inline start as an A, inline condition with a boolean and inline advance as A to A.
+
+130
+00:11:15,280 --> 00:11:26,280
+ So just to replicate a regular C style for loop and also an inline body or an inline action as A to anything.
+
+131
+00:11:26,280 --> 00:11:27,280
+ Okay.
+
+132
+00:11:27,280 --> 00:11:32,280
+ And I'm going to write variables here.
+
+133
+00:11:32,280 --> 00:11:36,280
+ So I'm going to say var A start and then I'm going to say while condition on A.
+
+134
+00:11:36,280 --> 00:11:40,280
+ I'm going to say action on A and then I'm going to advance.
+
+135
+00:11:40,280 --> 00:11:43,280
+ So A is equal to advance on A.
+
+136
+00:11:43,280 --> 00:11:47,280
+ So this is essentially me replicating a for loop in Scala.
+
+137
+00:11:47,280 --> 00:11:48,280
+ Okay.
+
+138
+00:11:48,280 --> 00:11:51,280
+ And I'm using variables and while loops.
+
+139
+00:11:51,280 --> 00:11:55,280
+ And if you're at this course, I'm pretty sure you're not dogmatic about this.
+
+140
+00:11:55,280 --> 00:11:59,280
+ Variables and while loops are really powerful if you want to write really performant code.
+
+141
+00:11:59,280 --> 00:12:04,280
+ So I'm going to have this inline def loop and I'm going to replicate this sucker.
+
+142
+00:12:04,280 --> 00:12:11,280
+ So I'm going to have a val start as let's say system current time millis just to measure time.
+
+143
+00:12:11,280 --> 00:12:13,280
+ So I'm going to call this start.
+
+144
+00:12:13,280 --> 00:12:17,280
+ Then I'm going to have a value of R, which is a random number.
+
+145
+00:12:17,280 --> 00:12:23,280
+ I'm going to say random next int, let's say 10,000 and I'm going to create another one.
+
+146
+00:12:23,280 --> 00:12:28,280
+ I'm going to call this U and then I'm going to run a quote unquote for loop,
+
+147
+00:12:28,280 --> 00:12:30,280
+ which is my loop function.
+
+148
+00:12:30,280 --> 00:12:39,280
+ So I'm going to say loop starting at zero, the condition is thing is less than 10,000.
+
+149
+00:12:39,280 --> 00:12:41,280
+ And then I'm going to say underscore plus one.
+
+150
+00:12:41,280 --> 00:12:48,280
+ So it's like a for loop in Java, but this is a function with multiple argument lists.
+
+151
+00:12:48,280 --> 00:12:54,280
+ So I'm going to say I and I'm going to have another loop with zero and then a hundred thousand.
+
+152
+00:12:54,280 --> 00:13:03,280
+ So underscore is less than a hundred thousand and underscore plus one and given a J inside.
+
+153
+00:13:03,280 --> 00:13:07,280
+ Okay, then I'm going to write an array.
+
+154
+00:13:07,280 --> 00:13:08,280
+ Let me define the array.
+
+155
+00:13:08,280 --> 00:13:15,280
+ So val array as array dot of dim of type integer.
+
+156
+00:13:15,280 --> 00:13:17,280
+ I'm going to have 10,000 numbers.
+
+157
+00:13:17,280 --> 00:13:24,280
+ I'm going to say array of I is equal to array of I plus Q.
+
+158
+00:13:24,280 --> 00:13:35,280
+ And finally, after the first loop, I'm going to say array of I is equal to array of I plus this other random variable, which is R.
+
+159
+00:13:35,280 --> 00:13:38,280
+ So then I'm going to have a print line.
+
+160
+00:13:38,280 --> 00:13:45,280
+ So print line, I'm going to say inline version and I'm going to inject a little expression here.
+
+161
+00:13:45,280 --> 00:13:51,280
+ So I'm going to have a system current time millis minus the start divided by 1000.
+
+162
+00:13:51,280 --> 00:13:54,280
+ So this is an expression.
+
+163
+00:13:54,280 --> 00:13:58,280
+ I'm going to divide this by 1000 point zero.
+
+164
+00:13:58,280 --> 00:14:00,280
+ So this is going to be the number of seconds.
+
+165
+00:14:00,280 --> 00:14:01,280
+ Okay.
+
+166
+00:14:01,280 --> 00:14:04,280
+ So this is going to be my little for loop.
+
+167
+00:14:04,280 --> 00:14:07,280
+ But this is going to be the inline version.
+
+168
+00:14:07,280 --> 00:14:10,280
+ And I'm also going to use a null inline version.
+
+169
+00:14:10,280 --> 00:14:11,280
+ So I'm going to copy this.
+
+170
+00:14:11,280 --> 00:14:13,280
+ I'm going to call this test and no inline.
+
+171
+00:14:13,280 --> 00:14:18,280
+ I'm going to cut out all the inlines from the function definition.
+
+172
+00:14:18,280 --> 00:14:23,280
+ So this loop is just a regular function with a bunch of parameters.
+
+173
+00:14:23,280 --> 00:14:24,280
+ Nothing is inline.
+
+174
+00:14:24,280 --> 00:14:28,280
+ And I'm going to say no inline version.
+
+175
+00:14:28,280 --> 00:14:29,280
+ Okay.
+
+176
+00:14:29,280 --> 00:14:31,280
+ And I'm going to type in a main.
+
+177
+00:14:31,280 --> 00:14:35,280
+ So main with args as array string.
+
+178
+00:14:35,280 --> 00:14:40,280
+ And this is going to be a test inline and then test no inline.
+
+179
+00:14:40,280 --> 00:14:41,280
+ That's it.
+
+180
+00:14:41,280 --> 00:14:44,280
+ So this is going to be my little application.
+
+181
+00:14:44,280 --> 00:14:49,280
+ And in another terminal, I'm going to start another SBT.
+
+182
+00:14:49,280 --> 00:14:52,280
+ Okay.
+
+183
+00:14:52,280 --> 00:14:56,280
+ And then I'm going to say run main.
+
+184
+00:14:56,280 --> 00:15:00,280
+ And then I'm going to say comrack.jvm.
+
+185
+00:15:00,280 --> 00:15:02,280
+ And I have simple inlines.
+
+186
+00:15:02,280 --> 00:15:05,280
+ Comrack.jvm.
+
+187
+00:15:05,280 --> 00:15:07,280
+ Inline simple inlines.
+
+188
+00:15:07,280 --> 00:15:08,280
+ Okay.
+
+189
+00:15:08,280 --> 00:15:10,280
+ So inline version is 0.1 second.
+
+190
+00:15:10,280 --> 00:15:12,280
+ No inline version is 1.5 seconds.
+
+191
+00:15:12,280 --> 00:15:17,280
+ So like 15 times performance improvement just by adding inlines.
+
+192
+00:15:17,280 --> 00:15:21,280
+ And it actually makes sense because in the double for loop,
+
+193
+00:15:21,280 --> 00:15:23,280
+ we don't have function calls,
+
+194
+00:15:23,280 --> 00:15:26,280
+ but rather we have while loops.
+
+195
+00:15:26,280 --> 00:15:28,280
+ So no function calls and no indirection.
+
+196
+00:15:28,280 --> 00:15:32,280
+ And that causes all this extra overhead.
+
+197
+00:15:32,280 --> 00:15:35,280
+ So inlines can help with performance improvement.
+
+198
+00:15:35,280 --> 00:15:40,280
+ But the place where we're going to spend most of our time is in the information
+
+199
+00:15:40,280 --> 00:15:44,280
+ that the inline surface to the compile time for metaprogramming.
+
+200
+00:15:44,280 --> 00:15:45,280
+ Okay.
+
+201
+00:15:45,280 --> 00:15:51,280
+ So this is one of the main reasons why I am going to focus on inlines
+
+202
+00:15:51,280 --> 00:15:54,280
+ and also macros in the beginning of the next chapter.
+
+203
+00:15:54,280 --> 00:15:58,280
+ So I just wanted to add performance optimization here because it's obvious
+
+204
+00:15:58,280 --> 00:16:03,280
+ and because it's also an important outcome of using inlines.
+
+205
+00:16:03,280 --> 00:16:08,280
+ Now the final feature of inlines that I wanted to show you in this video is transparent inlines.
+
+206
+00:16:08,280 --> 00:16:18,280
+ And transparent inlines means that the most concrete type definition of a function is going to be surfaced to the compiler
+
+207
+00:16:18,280 --> 00:16:23,280
+ because the compiler has access to those concrete times at compile time.
+
+208
+00:16:23,280 --> 00:16:24,280
+ Let me show you what I mean.
+
+209
+00:16:24,280 --> 00:16:26,280
+ So I'm going to have an inline function.
+
+210
+00:16:26,280 --> 00:16:33,280
+ So an inline def, let's call this wrap, that takes an item as an int and this returns an option int.
+
+211
+00:16:33,280 --> 00:16:34,280
+ Okay.
+
+212
+00:16:34,280 --> 00:16:36,280
+ And then I'm going to return a sum.
+
+213
+00:16:36,280 --> 00:16:38,280
+ So look at this.
+
+214
+00:16:38,280 --> 00:16:43,280
+ We are declaring that this function returns an int, but it actually returns a more concrete type than option.
+
+215
+00:16:43,280 --> 00:16:46,280
+ It returns a subtype of option.
+
+216
+00:16:46,280 --> 00:16:58,280
+ Now, if I define a vowel, let's call this an option as option int as wrap with the number seven.
+
+217
+00:16:58,280 --> 00:17:02,280
+ Obviously that's correct because the option int conforms to the type signature of this method.
+
+218
+00:17:02,280 --> 00:17:07,280
+ And obviously this compiles and the type checker is okay.
+
+219
+00:17:07,280 --> 00:17:17,280
+ Now, if I prefix this definition with a keyword transparent, what the transparent method does is that depending on the number that you pass inside
+
+220
+00:17:17,280 --> 00:17:23,280
+ or depending on the compile time information that the body of the method gives to the compiler,
+
+221
+00:17:23,280 --> 00:17:28,280
+ I can use more concrete types than the one declared in the function signature.
+
+222
+00:17:28,280 --> 00:17:36,280
+ So with the transparent keyword, I should be able to say val a sum, which is a sum int, and I'm going to say wrap seven.
+
+223
+00:17:36,280 --> 00:17:38,280
+ And this is also okay.
+
+224
+00:17:38,280 --> 00:17:42,280
+ But it's also okay only in the context of transparent.
+
+225
+00:17:42,280 --> 00:17:50,280
+ If I cut this out and I save this, wrap seven is not okay because wrap seven declares to be an option int and the implementation is opaque to the compiler.
+
+226
+00:17:50,280 --> 00:18:01,280
+ But otherwise, if the expression of the function is transparent to the compiler, then the type, the most concrete type of this expression can be used by the compiler to do some extra type checks.
+
+227
+00:18:01,280 --> 00:18:05,280
+ So this is also okay only if transparent.
+
+228
+00:18:05,280 --> 00:18:14,280
+ So you can see here that some methods can be declared transparent and even have the type signature any or whatever very general type,
+
+229
+00:18:14,280 --> 00:18:19,280
+ but the compiler can have access to the concrete method implementation.
+
+230
+00:18:19,280 --> 00:18:30,280
+ And that expression can give much more information than just the signature of the method, thereby allowing the compiler to do more rigorous type checks than by just looking at the type signature.
+
+231
+00:18:30,280 --> 00:18:33,280
+ All right, folks, this was an introduction to inlines in Scala.
+
+232
+00:18:33,280 --> 00:18:36,280
+ I hope I stimulated your appetite for metaprogramming.
+
+233
+00:18:36,280 --> 00:18:41,280
+ And if so, check out the long form course on Scala 3 macros and metaprogramming that I've just launched.
+
+234
+00:18:41,280 --> 00:18:42,280
+ I think you'll enjoy it.
+
+235
+00:18:42,280 --> 00:18:46,280
+ And until next time, this was Daniel for Rock the JVM signing off.
+
